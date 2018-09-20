@@ -15,7 +15,7 @@
     <parent>
         <groupId>com.github.hazendaz</groupId>
         <artifactId>base-parent</artifactId>
-        <version>16</version>
+        <version>18</version>
         <relativePath />
     </parent>
 
@@ -76,13 +76,13 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
-            <version>3.5.3</version>
+            <version>3.5.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>3.5.3</version>
+            <version>3.5.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -94,7 +94,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-resolver-provider</artifactId>
-            <version>3.5.3</version>
+            <version>3.5.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -128,7 +128,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>24.1-android</version>
+            <version>26.0-android</version>
             <scope>compile</scope>
         </dependency>
 
@@ -178,7 +178,7 @@
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <version>5.1.1</version>
+            <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
