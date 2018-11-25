@@ -27,7 +27,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.util.DirectoryScanner;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.internal.core.CompilationUnit;
 
 import net.sf.jautodoc.preferences.Configuration;
@@ -183,9 +182,7 @@ public class JautodocMojo extends AbstractMojo {
                         SourceManipulator source;
                         try {
                             test = Files.toString(file, StandardCharsets.UTF_8).toCharArray();
-                            source = new SourceManipulator(
-                                    new CompilationUnit(test),
-                                    this.loadConfiguration());
+                            source = new SourceManipulator(new CompilationUnit(test), this.loadConfiguration());
                             source.addJavadoc(null);
                         } catch (IOException e) {
                             getLog().error("", e);
