@@ -186,6 +186,10 @@ public class JautodocMojo extends AbstractMojo {
                 }
             }
 
+            // Load configuration
+            Configuration configuration = this.loadConfiguration();
+
+            // Process files
             for (int i = 0, n = files.size(); i < n; i++) {
                 File file = files.get(i);
                 if (file.exists()) {
@@ -194,7 +198,7 @@ public class JautodocMojo extends AbstractMojo {
                                 .createCompilationUnitFrom(project.getFile(new Path(file.getPath())));
                         SourceManipulator source;
                         try {
-                            source = new SourceManipulator(compilationUnit, this.loadConfiguration());
+                            source = new SourceManipulator(compilationUnit, configuration);
                             if (!headerOnly) {
                                 source.addJavadoc(null);
                             } else {
