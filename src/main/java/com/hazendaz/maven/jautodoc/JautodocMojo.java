@@ -66,83 +66,83 @@ public class JautodocMojo extends AbstractMojo {
     private String mode;
 
     /** Comment public members. */
-    @Parameter(property = "commentPublic")
+    @Parameter(defaultValue = "true", property = "commentPublic")
     private Boolean commentPublic;
 
     /** Comment package members. */
-    @Parameter(property = "commentPackage")
+    @Parameter(defaultValue = "true", property = "commentPackage")
     private Boolean commentPackage;
 
     /** Comment protected members. */
-    @Parameter(property = "commentProtected")
+    @Parameter(defaultValue = "false", property = "commentProtected")
     private Boolean commentProtected;
 
     /** Comment private members. */
-    @Parameter(property = "commentPrivate")
+    @Parameter(defaultValue = "false", property = "commentPrivate")
     private Boolean commentPrivate;
 
     /** Comment types. */
-    @Parameter(property = "commentTypes")
+    @Parameter(defaultValue = "true", property = "commentTypes")
     private Boolean commentTypes;
 
     /** Comment fields. */
-    @Parameter(property = "commentFields")
+    @Parameter(defaultValue = "true", property = "commentFields")
     private Boolean commentFields;
 
     /** Comment methods. [TODO NOT SET] */
-    @Parameter(property = "commentMethods")
+    @Parameter(defaultValue = "true", property = "commentMethods")
     private Boolean commentMethods;
 
     /** Comment get/set only. */
-    @Parameter(property = "commentGetterSetterOnly")
+    @Parameter(defaultValue = "false", property = "commentGetterSetterOnly")
     private Boolean commentGetterSetterOnly;
 
     /** Comment exclude getter/setter. */
-    @Parameter(property = "excludeGetterSetter")
+    @Parameter(defaultValue = "false", property = "excludeGetterSetter")
     private Boolean excludeGetterSetter;
 
     /** Add 'todo' auto generated javadoc. */
-    @Parameter(property = "addTodoForAutodoc")
+    @Parameter(defaultValue = "false", property = "addTodoForAutodoc")
     private Boolean addTodoForAutodoc;
 
     /** Create comment from element name. */
-    @Parameter(property = "createDummyComment")
+    @Parameter(defaultValue = "true", property = "createDummyComment")
     private Boolean createDummyComment;
 
     /** Single line field comment. */
-    @Parameter(property = "singleLineComment")
+    @Parameter(defaultValue = "true", property = "singleLineComment")
     private Boolean singleLineComment;
 
     /** Use Eclipse comment formatter. */
-    @Parameter(property = "useEclipseFormatter")
+    @Parameter(defaultValue = "false", property = "useEclipseFormatter")
     private Boolean useEclipseFormatter;
 
     /** [G,S]etter from field comment. */
-    @Parameter(property = "getterSetterFromField")
+    @Parameter(defaultValue = "false", property = "getterSetterFromField")
     private Boolean getterSetterFromField;
 
     /** First sentence only. */
-    @Parameter(property = "getterSetterFromFieldFirst")
+    @Parameter(defaultValue = "false", property = "getterSetterFromFieldFirst")
     private Boolean getterSetterFromFieldFirst;
 
     /** Replace existing getter/setter. */
-    @Parameter(property = "getterSetterFromFieldReplace")
+    @Parameter(defaultValue = "true", property = "getterSetterFromFieldReplace")
     private Boolean getterSetterFromFieldReplace;
 
     /** Add file header. */
-    @Parameter(property = "addHeader")
+    @Parameter(defaultValue = "false", property = "addHeader")
     private Boolean addHeader;
 
     /** Replace existing header. */
-    @Parameter(property = "replaceHeader")
+    @Parameter(defaultValue = "false", property = "replaceHeader")
     private Boolean replaceHeader;
 
     /** Multi comment header. */
-    @Parameter(property = "multiCommentHeader")
+    @Parameter(defaultValue = "false", property = "multiCommentHeader")
     private Boolean multiCommentHeader;
 
     /** Add header only (No Javadoc created). [TODO Not Set] */
-    @Parameter(property = "headerOnly")
+    @Parameter(defaultValue = "false", property = "headerOnly")
     private Boolean headerOnly;
 
     /** Maven ProjectHelper. */
