@@ -124,44 +124,10 @@
 
         <!-- Jautodoc -->
         <dependency>
-            <groupId>net.sf.jautodoc</groupId>
-            <artifactId>velocity</artifactId>
-            <version>1.14.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jautodoc</groupId>
+            <groupId>com.github.hazendaz.jautodoc</groupId>
             <artifactId>jautodoc</artifactId>
-            <version>1.14.0</version>
+            <version>1.15.0-SNAPSHOT</version>
             <scope>compile</scope>
-        </dependency>
-
-        <!-- Eclipse -->
-        <dependency>
-            <groupId>org.eclipse.jdt</groupId>
-            <artifactId>org.eclipse.jdt.core</artifactId>
-            <version>3.16.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.platform</groupId>
-            <artifactId>org.eclipse.jface</artifactId>
-            <version>3.14.100</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.eclipse.platform</groupId>
-                    <artifactId>org.eclipse.swt.gtk.linux.aarch64</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.platform</groupId>
-                    <artifactId>org.eclipse.swt.gtk.linux.arm</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.platform</groupId>
-                    <artifactId>org.eclipse.swt</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Junit -->
