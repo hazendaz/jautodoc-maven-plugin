@@ -1,5 +1,5 @@
 /**
- *    Copyright 2011-2018 the original author or authors.
+ *    Copyright 2011-2019 the original author or authors.
  *
  *     All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  *     Public License v1.0 which accompanies this distribution, and is available at
@@ -8,13 +8,13 @@
  */
 package com.hazendaz.maven.jautodoc;
 
-import com.google.common.io.Files;
-
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.sf.jautodoc.preferences.Configuration;
+import net.sf.jautodoc.source.SourceManipulator;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -27,10 +27,14 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.util.DirectoryScanner;
-import org.eclipse.jdt.internal.core.CompilationUnit;
-
-import net.sf.jautodoc.preferences.Configuration;
-import net.sf.jautodoc.source.SourceManipulator;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IMember;
+import org.eclipse.jdt.core.JavaCore;
 
 /**
  * The Class JautodocMojo.
@@ -170,20 +174,33 @@ public class JautodocMojo extends AbstractMojo {
 
         if (numberOfFiles > 0) {
             ResultCollector rc = new ResultCollector();
-            // Properties hashCache = readFileHashCacheFile();
 
-            String basedirPath = getBasedirPath();
+            IWorkspace ws = ResourcesPlugin.getWorkspace();
+            IProject project = ws.getRoot().getProject("External Files");
+            if (!project.exists()) {
+                try {
+                    project.create(null);
+                } catch (CoreException e) {
+                    log.error("unable to create Workspace" + e.getMessage());
+                    return;
+                }
+            }
+
             for (int i = 0, n = files.size(); i < n; i++) {
                 File file = files.get(i);
                 if (file.exists()) {
                     if (file.canWrite()) {
-                        // formatFile(file, rc, hashCache, basedirPath);
-                        char[] test;
+                        ICompilationUnit compilationUnit = JavaCore
+                                .createCompilationUnitFrom(project.getFile(new Path(file.getPath())));
                         SourceManipulator source;
                         try {
-                            test = Files.toString(file, StandardCharsets.UTF_8).toCharArray();
-                            source = new SourceManipulator(new CompilationUnit(test), this.loadConfiguration());
-                            source.addJavadoc(null);
+                            source = new SourceManipulator(compilationUnit, this.loadConfiguration());
+                            if (!headerOnly) {
+                                source.addJavadoc(null);
+                            } else {
+                                source.setForceAddHeader(headerOnly);
+                                source.addJavadoc(new IMember[0], null);
+                            }
                         } catch (IOException e) {
                             getLog().error("", e);
                             rc.skippedCount++;
@@ -260,15 +277,12 @@ public class JautodocMojo extends AbstractMojo {
      *            the files
      */
     List<File> addCollectionFiles(File newBasedir) {
+        List<String> includes = new ArrayList<>();
+        includes.add("**/*.java");
+
         final DirectoryScanner ds = new DirectoryScanner();
         ds.setBasedir(newBasedir);
-        // if (this.includes != null && this.includes.length > 0) {
-        // ds.setIncludes(this.includes);
-        // } else {
-        // ds.setIncludes(DEFAULT_INCLUDES);
-        // }
-
-        // ds.setExcludes(this.excludes);
+        ds.setIncludes(includes.toArray(new String[0]));
         ds.addDefaultExcludes();
         ds.setCaseSensitive(false);
         ds.setFollowSymlinks(false);
@@ -279,20 +293,6 @@ public class JautodocMojo extends AbstractMojo {
             foundFiles.add(new File(newBasedir, filename));
         }
         return foundFiles;
-    }
-
-    /**
-     * Gets the basedir path.
-     * 
-     * @return the basedir path
-     */
-    private String getBasedirPath() {
-        try {
-            return this.basedir.getCanonicalPath();
-        } catch (IOException e) {
-            getLog().debug("", e);
-            return "";
-        }
     }
 
     class ResultCollector {
