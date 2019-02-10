@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-       Copyright 2011-2018 the original author or authors.
+       Copyright 2011-2019 the original author or authors.
 
         All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
         Public License v1.0 which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@
     <parent>
         <groupId>com.github.hazendaz</groupId>
         <artifactId>base-parent</artifactId>
-        <version>20</version>
+        <version>21</version>
         <relativePath />
     </parent>
 
@@ -25,7 +25,7 @@
     <packaging>maven-plugin</packaging>
 
     <name>jautodoc-maven-plugin</name>
-    <description> 	JAutodoc is an Eclipse Plugin for automatically adding Javadoc and file headers to your source code.</description>
+    <description>JAutodoc is an Eclipse Plugin for automatically adding Javadoc and file headers to your source code.</description>
     <url>https://github.com/hazendaz/jautodoc-maven-plugin</url>
     <licenses>
         <license>
@@ -118,7 +118,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>27.0.1-android</version>
+            <version>27.0.1-jre</version>
             <scope>compile</scope>
         </dependency>
 
