@@ -27,11 +27,13 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.util.DirectoryScanner;
+import org.eclipse.core.internal.runtime.InternalPlatform;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.JavaCore;
@@ -175,13 +177,24 @@ public class JautodocMojo extends AbstractMojo {
         if (numberOfFiles > 0) {
             ResultCollector rc = new ResultCollector();
 
+            // Cause a workspace to be created
+            Plugin plugin = new ResourcesPlugin();
+            try {
+                plugin.start(InternalPlatform.getDefault().getBundleContext());
+            } catch (Exception e) {
+                log.error("unable to startup plugin " + e.getMessage());
+                return;
+            }
+            plugin.getStateLocation();
+
+            // Get workspace
             IWorkspace ws = ResourcesPlugin.getWorkspace();
             IProject project = ws.getRoot().getProject("External Files");
             if (!project.exists()) {
                 try {
                     project.create(null);
                 } catch (CoreException e) {
-                    log.error("unable to create Workspace" + e.getMessage());
+                    log.error("unable to create Workspace " + e.getMessage());
                     return;
                 }
             }
@@ -220,8 +233,15 @@ public class JautodocMojo extends AbstractMojo {
                 }
             }
 
-            // storeFileHashCache(hashCache);
+            // Shutdown
+            try {
+                plugin.stop(InternalPlatform.getDefault().getBundleContext());
+            } catch (Exception e) {
+                log.error("unable to shutdown plugin " + e.getMessage());
+                return;
+            }
 
+            // Finish processing
             long endClock = System.currentTimeMillis();
 
             log.info("Successfully formatted:          " + rc.successCount + FILE_S);
