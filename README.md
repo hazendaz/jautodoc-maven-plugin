@@ -1,7 +1,7 @@
 Jautodoc Maven Plugin
 =====================
 
-[![Build Status](https://travis-ci.org/hazendaz/jautodoc-maven-plugin.svg?branch=master)](https://travis-ci.org/hazendaz/jautodoc-maven-plugin)
+[![Java CI](https://github.com/hazendaz/jautodoc-maven-plugin/workflows/Java%20CI/badge.svg)](https://github.com/hazendaz/jautodoc-maven-plugin/actions?query=workflow%3A%22Java+CI%22)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.github.hazendaz.maven/jautodoc-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.hazendaz.maven/jautodoc-maven-plugin)
 [![Eclipse](https://img.shields.io/badge/license-Eclipse-blue.svg)](https://www.eclipse.org/legal/epl-v10.html)
 
