@@ -10,6 +10,7 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -50,14 +51,14 @@
         <url>https://github.com/hazendaz/jautodoc-maven-plugin/issues</url>
     </issueManagement>
     <ciManagement>
-        <system>Travis CI</system>
-        <url>https://travis-ci.org/hazendaz/jautodoc-maven-plugin</url>
+        <system>GitHub Actions</system>
+        <url>https://github.com/hazendaz/jautodoc-maven-plugin/actions</url>
     </ciManagement>
     <distributionManagement>
         <site>
-            <id>gh-pages</id>
+            <id>gh-pages-scm</id>
             <name>GitHub Pages</name>
-            <url>github:https://hazendaz.github.io/jautodoc-maven-plugin/</url>
+            <url>scm:git:ssh://github.com/hazendaz/jautodoc-maven-plugin.git</url>
         </site>
     </distributionManagement>
 
