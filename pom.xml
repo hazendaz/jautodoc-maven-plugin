@@ -125,8 +125,8 @@
 
         <!-- Jautodoc -->
         <dependency>
-            <groupId>com.github.hazendaz.jautodoc</groupId>
-            <artifactId>jautodoc</artifactId>
+            <groupId>net.sf.jautodoc</groupId>
+            <artifactId>net.sf.jautodoc</artifactId>
             <version>1.15.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
