@@ -142,6 +142,19 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.core</artifactId>
+            <version>3.33.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.jface.text</artifactId>
+            <version>3.23.0</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- Junit -->
         <dependency>
             <groupId>org.junit.vintage</groupId>
