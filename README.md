@@ -11,7 +11,7 @@ Jautodoc Maven Plugin provides maven integration for eclipse jautodoc plugin.
 
 JAutodoc is an Eclipse Plugin for automatically adding Javadoc and file headers to your source code.
 
-See [jautodoc](http://jautodoc.sourceforge.net/)
+See [jautodoc](https://github.com/mkesting/jautodoc/)
 
 Example Usage
 
