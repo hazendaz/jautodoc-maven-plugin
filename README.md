@@ -16,23 +16,22 @@ See [jautodoc](http://jautodoc.sourceforge.net/)
 Example Usage
 
 ```xml
-            <plugin>
-                <groupId>com.github.hazendaz.maven</groupId>
-                <artifactId>jautodoc-maven-plugin</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-                <configuration>
-                    <archiveDir>distro</archiveDir>
-                    <fileName>installDistro.sh</fileName>
-                    <label>Distro Self Extraction</label>
-                    <startupScript>./runDistroScript.sh</startupScript>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>jautodoc</id>
-                        <goals>
-                            <goal>jautodoc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<plugin>
+    <groupId>com.github.hazendaz.maven</groupId>
+    <artifactId>jautodoc-maven-plugin</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <configuration>
+        -- TBD --
+    </configuration>
+    <executions>
+        <execution>
+            <id>jautodoc</id>
+            <goals>
+                <goal>jautodoc</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
 ```
+
+WIP - This project is a work in progress.  To even begin to work, needs jautodoc deployed to central.  Code written in a number of years old and needs to be looked at again.  Point of pushing this up is to finally suggest work might happen here.
