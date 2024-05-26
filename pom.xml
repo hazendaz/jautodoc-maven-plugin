@@ -63,8 +63,10 @@
     </distributionManagement>
 
     <properties>
-        <java.version>11</java.version>
-        <java.release.version>11</java.release.version>
+        <java.version>17</java.version>
+        <java.release.version>17</java.release.version>
+        <java.test.version>17</java.test.version>
+        <java.test.release.version>17</java.test.release.version>
 
         <!-- Automatic Module Name -->
         <module.name>com.github.hazendaz.maven.makeself</module.name>
