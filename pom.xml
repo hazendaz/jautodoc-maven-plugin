@@ -68,6 +68,8 @@
         <java.test.version>17</java.test.version>
         <java.test.release.version>17</java.test.release.version>
 
+        <maven.version>3.9.7</maven.version>
+
         <!-- Automatic Module Name -->
         <module.name>com.github.hazendaz.maven.makeself</module.name>
 
@@ -80,13 +82,13 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
-            <version>3.9.7</version>
+            <version>${maven.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>3.9.7</version>
+            <version>${maven.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -98,7 +100,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-resolver-provider</artifactId>
-            <version>3.9.7</version>
+            <version>${maven.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
