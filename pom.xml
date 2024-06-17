@@ -68,7 +68,7 @@
         <java.test.version>17</java.test.version>
         <java.test.release.version>17</java.test.release.version>
 
-        <maven.version>3.9.7</maven.version>
+        <maven.version>3.9.8</maven.version>
 
         <!-- Automatic Module Name -->
         <module.name>com.github.hazendaz.maven.makeself</module.name>
