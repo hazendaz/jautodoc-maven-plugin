@@ -41,10 +41,10 @@
     </prerequisites>
 
     <scm>
-        <url>https://github.com/hazendaz/jautodoc-maven-plugin</url>
         <connection>scm:git:ssh://github.com/hazendaz/jautodoc-maven-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/hazendaz/jautodoc-maven-plugin.git</developerConnection>
         <tag>HEAD</tag>
+        <url>https://github.com/hazendaz/jautodoc-maven-plugin</url>
     </scm>
     <issueManagement>
         <system>GitHub Issue Management</system>
