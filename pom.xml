@@ -154,9 +154,9 @@
 
         <!-- Jautodoc -->
         <dependency>
-            <groupId>net.sf.jautodoc</groupId>
-            <artifactId>net.sf.jautodoc</artifactId>
-            <version>1.15.0-SNAPSHOT</version>
+            <groupId>com.github.hazendaz.jautodoc</groupId>
+            <artifactId>jautodoc</artifactId>
+            <version>1.17.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
