@@ -1,5 +1,5 @@
 /*
- *     Copyright 2011-2023 the original author or authors.
+ *     Copyright 2011-2025 the original author or authors.
  *
  *     All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  *     Public License v1.0 which accompanies this distribution, and is available at
@@ -10,8 +10,12 @@ package com.hazendaz.maven.jautodoc;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import net.sf.jautodoc.preferences.Configuration;
 import net.sf.jautodoc.source.SourceManipulator;
@@ -20,7 +24,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -32,7 +35,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IMember;
@@ -49,7 +51,7 @@ public class JautodocMojo extends AbstractMojo {
 
     /** Skip run of plugin. */
     @Parameter(defaultValue = "false", alias = "skip", property = "skip")
-    private Boolean skip;
+    private boolean skip;
 
     /** The base directory. */
     @Parameter(defaultValue = "${project.basedir}", readonly = true)
@@ -57,97 +59,97 @@ public class JautodocMojo extends AbstractMojo {
 
     /** Log the files that are being processed. */
     @Parameter(defaultValue = "false", property = "verbose")
-    private Boolean verbose;
+    private boolean verbose;
 
     /**
      * The mode to use: 'complete' - Complete existing Javadoc, 'keep' - Keep existing Javadoc, 'replace' - Replace
-     * existing Javadoc
+     * existing Javadoc.
      */
     @Parameter(property = "mode")
     private String mode;
 
     /** Comment public members. */
     @Parameter(defaultValue = "true", property = "commentPublic")
-    private Boolean commentPublic;
+    private boolean commentPublic;
 
     /** Comment package members. */
     @Parameter(defaultValue = "true", property = "commentPackage")
-    private Boolean commentPackage;
+    private boolean commentPackage;
 
     /** Comment protected members. */
     @Parameter(defaultValue = "false", property = "commentProtected")
-    private Boolean commentProtected;
+    private boolean commentProtected;
 
     /** Comment private members. */
     @Parameter(defaultValue = "false", property = "commentPrivate")
-    private Boolean commentPrivate;
+    private boolean commentPrivate;
 
     /** Comment types. */
     @Parameter(defaultValue = "true", property = "commentTypes")
-    private Boolean commentTypes;
+    private boolean commentTypes;
 
     /** Comment fields. */
     @Parameter(defaultValue = "true", property = "commentFields")
-    private Boolean commentFields;
+    private boolean commentFields;
 
-    /** Comment methods. [TODO NOT SET] */
+    /** Comment methods. */
     @Parameter(defaultValue = "true", property = "commentMethods")
-    private Boolean commentMethods;
+    private boolean commentMethods;
 
     /** Comment get/set only. */
     @Parameter(defaultValue = "false", property = "commentGetterSetterOnly")
-    private Boolean commentGetterSetterOnly;
+    private boolean commentGetterSetterOnly;
 
     /** Comment exclude getter/setter. */
     @Parameter(defaultValue = "false", property = "excludeGetterSetter")
-    private Boolean excludeGetterSetter;
+    private boolean excludeGetterSetter;
 
     /** Add 'todo' auto generated javadoc. */
     @Parameter(defaultValue = "false", property = "addTodoForAutodoc")
-    private Boolean addTodoForAutodoc;
+    private boolean addTodoForAutodoc;
 
     /** Create comment from element name. */
     @Parameter(defaultValue = "true", property = "createDummyComment")
-    private Boolean createDummyComment;
+    private boolean createDummyComment;
 
     /** Single line field comment. */
     @Parameter(defaultValue = "true", property = "singleLineComment")
-    private Boolean singleLineComment;
+    private boolean singleLineComment;
 
     /** Use Eclipse comment formatter. */
     @Parameter(defaultValue = "false", property = "useEclipseFormatter")
-    private Boolean useEclipseFormatter;
+    private boolean useEclipseFormatter;
 
     /** [G,S]etter from field comment. */
     @Parameter(defaultValue = "false", property = "getterSetterFromField")
-    private Boolean getterSetterFromField;
+    private boolean getterSetterFromField;
 
     /** First sentence only. */
     @Parameter(defaultValue = "false", property = "getterSetterFromFieldFirst")
-    private Boolean getterSetterFromFieldFirst;
+    private boolean getterSetterFromFieldFirst;
 
     /** Replace existing getter/setter. */
     @Parameter(defaultValue = "true", property = "getterSetterFromFieldReplace")
-    private Boolean getterSetterFromFieldReplace;
+    private boolean getterSetterFromFieldReplace;
 
     /** Add file header. */
     @Parameter(defaultValue = "false", property = "addHeader")
-    private Boolean addHeader;
+    private boolean addHeader;
 
     /** Replace existing header. */
     @Parameter(defaultValue = "false", property = "replaceHeader")
-    private Boolean replaceHeader;
+    private boolean replaceHeader;
 
     /** Multi comment header. */
     @Parameter(defaultValue = "false", property = "multiCommentHeader")
-    private Boolean multiCommentHeader;
+    private boolean multiCommentHeader;
 
-    /** Add header only (No Javadoc created). [TODO Not Set] */
+    /** Add header only (No Javadoc created). */
     @Parameter(defaultValue = "false", property = "headerOnly")
-    private Boolean headerOnly;
+    private boolean headerOnly;
 
     /** Maven ProjectHelper. */
-    @Component
+    @Inject
     private MavenProjectHelper projectHelper;
 
     /** Maven Project. */
@@ -175,6 +177,16 @@ public class JautodocMojo extends AbstractMojo {
 
         if (numberOfFiles > 0) {
             ResultCollector rc = new ResultCollector();
+
+            // Ensure a minimal Eclipse workspace exists
+            Path workspaceDir = Path.of(project.getBuild().getDirectory(), "jautodoc-workspace");
+            try {
+                ensureMinimalWorkspace(workspaceDir);
+            } catch (IOException e) {
+                log.error("unable to create Workspace " + e.getMessage());
+                return;
+            }
+            System.setProperty("osgi.instance.area", workspaceDir.toFile().getAbsolutePath());
 
             // Cause a workspace to be created
             Plugin plugin = new ResourcesPlugin();
@@ -206,8 +218,8 @@ public class JautodocMojo extends AbstractMojo {
                 File file = files.get(i);
                 if (file.exists()) {
                     if (file.canWrite()) {
-                        ICompilationUnit compilationUnit = JavaCore
-                                .createCompilationUnitFrom(project.getFile(new Path(file.getPath())));
+                        ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom(
+                                project.getFile(new org.eclipse.core.runtime.Path(file.getPath())));
                         SourceManipulator source;
                         try {
                             source = new SourceManipulator(compilationUnit, configuration);
@@ -243,15 +255,39 @@ public class JautodocMojo extends AbstractMojo {
             // Finish processing
             long endClock = System.currentTimeMillis();
 
-            log.info("Successfully formatted:          " + rc.successCount + FILE_S);
-            log.info("Fail to format:                  " + rc.failCount + FILE_S);
-            log.info("Skipped:                         " + rc.skippedCount + FILE_S);
-            log.info("Read only skipped:               " + rc.readOnlyCount + FILE_S);
-            log.info("Approximate time taken:          " + ((endClock - startClock) / 1000) + "s");
+            log.info("Successfully formatted: " + rc.successCount + FILE_S);
+            log.info("Fail to format:         " + rc.failCount + FILE_S);
+            log.info("Skipped:                " + rc.skippedCount + FILE_S);
+            log.info("Read only skipped:      " + rc.readOnlyCount + FILE_S);
+            log.info("Approximate time taken: " + ((endClock - startClock) / 1000) + "s");
         }
 
     }
 
+    /**
+     * Ensures a minimal Eclipse workspace exists at the given location. Creates the .metadata directory if missing.
+     *
+     * @param workspaceDir
+     *            the workspace dir
+     *
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     */
+    private void ensureMinimalWorkspace(Path workspaceDir) throws IOException {
+        if (!Files.exists(workspaceDir)) {
+            Files.createDirectories(workspaceDir);
+        }
+        Path metadataDir = workspaceDir.resolve(".metadata");
+        if (!Files.exists(metadataDir)) {
+            Files.createDirectories(metadataDir);
+        }
+    }
+
+    /**
+     * Load configuration.
+     *
+     * @return the configuration
+     */
     private Configuration loadConfiguration() {
         final Configuration configuration = new Configuration();
         configuration.setAddHeader(this.addHeader);
@@ -296,8 +332,10 @@ public class JautodocMojo extends AbstractMojo {
     /**
      * Add source files to the files list.
      *
-     * @param files
-     *            the files
+     * @param newBasedir
+     *            the new basedir
+     *
+     * @return the list
      */
     List<File> addCollectionFiles(File newBasedir) {
         List<String> includes = new ArrayList<>();
@@ -313,19 +351,26 @@ public class JautodocMojo extends AbstractMojo {
 
         List<File> foundFiles = new ArrayList<>();
         for (String filename : ds.getIncludedFiles()) {
-            foundFiles.add(new File(newBasedir, filename));
+            foundFiles.add(newBasedir.toPath().resolve(filename).toFile());
         }
         return foundFiles;
     }
 
+    /**
+     * The Class ResultCollector.
+     */
     class ResultCollector {
 
+        /** The success count. */
         int successCount;
 
+        /** The fail count. */
         int failCount;
 
+        /** The skipped count. */
         int skippedCount;
 
+        /** The read only count. */
         int readOnlyCount;
     }
 
