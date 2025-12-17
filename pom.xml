@@ -68,7 +68,7 @@
         <java.test.version>21</java.test.version>
         <java.test.release.version>21</java.test.release.version>
 
-        <maven.version>3.9.11</maven.version>
+        <maven.version>3.9.12</maven.version>
 
         <!-- Automatic Module Name -->
         <module.name>com.github.hazendaz.maven.makeself</module.name>
