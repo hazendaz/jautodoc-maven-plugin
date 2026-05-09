@@ -152,14 +152,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- Jautodoc -->
-        <dependency>
-            <groupId>com.github.hazendaz.jautodoc</groupId>
-            <artifactId>jautodoc</artifactId>
-            <version>1.17.2-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.eclipse.jdt</groupId>
             <artifactId>org.eclipse.jdt.core</artifactId>
@@ -172,8 +164,20 @@
             <version>3.30.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.text</artifactId>
+            <version>3.14.300</version>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- Junit -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.14.0</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
