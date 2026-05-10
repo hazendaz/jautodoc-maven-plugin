@@ -1,5 +1,5 @@
 /*
- *     Copyright 2011-2025 the original author or authors.
+ *     Copyright 2011-2026 the original author or authors.
  *
  *     All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  *     Public License v1.0 which accompanies this distribution, and is available at
@@ -8,15 +8,15 @@
  */
 package com.hazendaz.maven.jautodoc;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.hazendaz.maven.jautodoc.core.JautodocConfiguration;
 import com.hazendaz.maven.jautodoc.core.JautodocMode;
 import com.hazendaz.maven.jautodoc.core.JautodocResult;
 import com.hazendaz.maven.jautodoc.core.StandaloneJautodocEngine;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
