@@ -478,12 +478,14 @@ public final class JavaSourceProcessor {
             List<String> missing = new ArrayList<>();
             for (String tagLine : requiredTags) {
                 if (tagLine.startsWith("@param ")) {
-                    String pName = tagLine.substring(7, tagLine.indexOf(' ', 7));
+                    int spaceAt = tagLine.indexOf(' ', 7);
+                    String pName = spaceAt >= 0 ? tagLine.substring(7, spaceAt) : tagLine.substring(7);
                     if (!presentParams.contains(pName)) {
                         missing.add(tagLine);
                     }
                 } else if (tagLine.startsWith("@throws ")) {
-                    String exName = tagLine.substring(8, tagLine.indexOf(' ', 8));
+                    int spaceAt = tagLine.indexOf(' ', 8);
+                    String exName = spaceAt >= 0 ? tagLine.substring(8, spaceAt) : tagLine.substring(8);
                     if (!presentThrows.contains(exName)) {
                         missing.add(tagLine);
                     }

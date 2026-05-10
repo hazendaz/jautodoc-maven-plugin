@@ -77,14 +77,25 @@ public final class HeaderProcessor {
     /**
      * Returns the character offset immediately after the closing {@code *
      /
-    } of an existing header comment,or* {@code -1}if the file does not begin with a block comment.*
-     * <p>
-     * * Only the first non-whitespace token is inspected;if it is not {@code /*} the method returns {@code -1}.
+    }
+
+    of an
+    existing header comment,or*
+    {@code -1}if
+    the file
+    does not
+    begin with
+    a block comment.*<p>*
+    Only the
+    first non-whitespace token
+    is inspected;if
+    it is not
+    {@code /*} the method returns {@code -1}.
      *
      * @param source
      *            the source
      *
-     * @return the int
+     * @return the character offset after the closing delimiter, or -1
      */
     static int findExistingHeaderEnd(String source) {
         int pos = 0;
