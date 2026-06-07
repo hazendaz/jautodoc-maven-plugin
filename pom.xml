@@ -16,7 +16,7 @@
     <parent>
         <groupId>com.github.hazendaz</groupId>
         <artifactId>base-parent</artifactId>
-        <version>59</version>
+        <version>60</version>
         <relativePath />
     </parent>
 
@@ -68,7 +68,7 @@
         <java.test.version>21</java.test.version>
         <java.test.release.version>21</java.test.release.version>
 
-        <maven.version>3.9.15</maven.version>
+        <maven.version>3.9.16</maven.version>
 
         <!-- Automatic Module Name -->
         <module.name>com.github.hazendaz.maven.makeself</module.name>
@@ -178,7 +178,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.14.0</version>
+            <version>6.1.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
