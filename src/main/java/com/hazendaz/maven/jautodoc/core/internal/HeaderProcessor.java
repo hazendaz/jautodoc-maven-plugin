@@ -77,20 +77,9 @@ public final class HeaderProcessor {
     /**
      * Returns the character offset immediately after the closing {@code *
      /
-    }
-
-    of an
-    existing header comment,or*
-    {@code -1}if
-    the file
-    does not
-    begin with
-    a block comment.*<p>*
-    Only the
-    first non-whitespace token
-    is inspected;if
-    it is not
-    {@code /*} the method returns {@code -1}.
+    } of an existing header comment,or* {@code -1}if the file does not begin with a block comment.*
+     * <p>
+     * * Only the first non-whitespace token is inspected;if it is not {@code /*} the method returns {@code -1}.
      *
      * @param source
      *            the source
