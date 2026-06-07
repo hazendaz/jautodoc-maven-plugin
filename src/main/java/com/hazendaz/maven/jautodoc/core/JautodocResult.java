@@ -1,0 +1,82 @@
+/*
+ *     Copyright 2011-2026 the original author or authors.
+ *
+ *     All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
+ *     Public License v1.0 which accompanies this distribution, and is available at
+ *
+ *     https://www.eclipse.org/legal/epl-v10.html.
+ */
+package com.hazendaz.maven.jautodoc.core;
+
+/**
+ * Aggregated result counts from a single Jautodoc processing run.
+ */
+public final class JautodocResult {
+
+    /** Number of files successfully processed (written back if changed). */
+    private final int successCount;
+
+    /** Number of files that could not be found on disk. */
+    private final int failCount;
+
+    /** Number of files skipped due to a processing exception. */
+    private final int skippedCount;
+
+    /** Number of files skipped because they were read-only. */
+    private final int readOnlyCount;
+
+    /**
+     * Instantiates a new jautodoc result.
+     *
+     * @param successCount
+     *            the success count
+     * @param failCount
+     *            the fail count
+     * @param skippedCount
+     *            the skipped count
+     * @param readOnlyCount
+     *            the read only count
+     */
+    public JautodocResult(int successCount, int failCount, int skippedCount, int readOnlyCount) {
+        this.successCount = successCount;
+        this.failCount = failCount;
+        this.skippedCount = skippedCount;
+        this.readOnlyCount = readOnlyCount;
+    }
+
+    /**
+     * Gets the success count.
+     *
+     * @return the success count
+     */
+    public int getSuccessCount() {
+        return successCount;
+    }
+
+    /**
+     * Gets the fail count.
+     *
+     * @return the fail count
+     */
+    public int getFailCount() {
+        return failCount;
+    }
+
+    /**
+     * Gets the skipped count.
+     *
+     * @return the skipped count
+     */
+    public int getSkippedCount() {
+        return skippedCount;
+    }
+
+    /**
+     * Gets the read only count.
+     *
+     * @return the read only count
+     */
+    public int getReadOnlyCount() {
+        return readOnlyCount;
+    }
+}

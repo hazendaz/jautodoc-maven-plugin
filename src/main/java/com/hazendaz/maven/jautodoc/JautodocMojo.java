@@ -1,5 +1,5 @@
 /*
- *     Copyright 2011-2025 the original author or authors.
+ *     Copyright 2011-2026 the original author or authors.
  *
  *     All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  *     Public License v1.0 which accompanies this distribution, and is available at
@@ -8,17 +8,15 @@
  */
 package com.hazendaz.maven.jautodoc;
 
+import com.hazendaz.maven.jautodoc.core.JautodocConfiguration;
+import com.hazendaz.maven.jautodoc.core.JautodocMode;
+import com.hazendaz.maven.jautodoc.core.JautodocResult;
+import com.hazendaz.maven.jautodoc.core.StandaloneJautodocEngine;
+
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
-
-import net.sf.jautodoc.preferences.Configuration;
-import net.sf.jautodoc.source.SourceManipulator;
+import java.util.stream.Collectors;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -27,18 +25,7 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.util.DirectoryScanner;
-import org.eclipse.core.internal.runtime.InternalPlatform;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Plugin;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IMember;
-import org.eclipse.jdt.core.JavaCore;
 
 /**
  * The Class JautodocMojo.
@@ -77,11 +64,11 @@ public class JautodocMojo extends AbstractMojo {
     private boolean commentPackage;
 
     /** Comment protected members. */
-    @Parameter(defaultValue = "false", property = "commentProtected")
+    @Parameter(defaultValue = "true", property = "commentProtected")
     private boolean commentProtected;
 
     /** Comment private members. */
-    @Parameter(defaultValue = "false", property = "commentPrivate")
+    @Parameter(defaultValue = "true", property = "commentPrivate")
     private boolean commentPrivate;
 
     /** Comment types. */
@@ -103,6 +90,10 @@ public class JautodocMojo extends AbstractMojo {
     /** Comment exclude getter/setter. */
     @Parameter(defaultValue = "false", property = "excludeGetterSetter")
     private boolean excludeGetterSetter;
+
+    /** Exclude methods annotated with @Override. */
+    @Parameter(defaultValue = "true", property = "excludeOverrides")
+    private boolean excludeOverrides;
 
     /** Add 'todo' auto generated javadoc. */
     @Parameter(defaultValue = "false", property = "addTodoForAutodoc")
@@ -148,14 +139,6 @@ public class JautodocMojo extends AbstractMojo {
     @Parameter(defaultValue = "false", property = "headerOnly")
     private boolean headerOnly;
 
-    /** Maven ProjectHelper. */
-    @Inject
-    private MavenProjectHelper projectHelper;
-
-    /** Maven Project. */
-    @Parameter(defaultValue = "${project}", readonly = true, required = true)
-    private MavenProject project;
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         // Check if plugin run should be skipped
@@ -176,111 +159,24 @@ public class JautodocMojo extends AbstractMojo {
         log.info("Number of files to be jautodoc'd: " + numberOfFiles);
 
         if (numberOfFiles > 0) {
-            ResultCollector rc = new ResultCollector();
-
-            // Ensure a minimal Eclipse workspace exists
-            Path workspaceDir = Path.of(project.getBuild().getDirectory(), "jautodoc-workspace");
             try {
-                ensureMinimalWorkspace(workspaceDir);
-            } catch (IOException e) {
-                log.error("unable to create Workspace " + e.getMessage());
-                return;
+                JautodocConfiguration configuration = this.loadConfiguration();
+                StandaloneJautodocEngine engine = new StandaloneJautodocEngine(configuration);
+                JautodocResult rc = engine.process(files.stream().map(File::toPath).collect(Collectors.toList()));
+
+                // Finish processing
+                long endClock = System.currentTimeMillis();
+
+                log.info("Successfully formatted: " + rc.getSuccessCount() + FILE_S);
+                log.info("Fail to format:         " + rc.getFailCount() + FILE_S);
+                log.info("Skipped:                " + rc.getSkippedCount() + FILE_S);
+                log.info("Read only skipped:      " + rc.getReadOnlyCount() + FILE_S);
+                log.info("Approximate time taken: " + ((endClock - startClock) / 1000) + "s");
+            } catch (RuntimeException e) {
+                throw new MojoExecutionException("Unable to process sources", e);
             }
-            System.setProperty("osgi.instance.area", workspaceDir.toFile().getAbsolutePath());
-
-            // Cause a workspace to be created
-            Plugin plugin = new ResourcesPlugin();
-            try {
-                plugin.start(InternalPlatform.getDefault().getBundleContext());
-            } catch (Exception e) {
-                log.error("unable to startup plugin " + e.getMessage());
-                return;
-            }
-            plugin.getStateLocation();
-
-            // Get workspace
-            IWorkspace ws = ResourcesPlugin.getWorkspace();
-            IProject project = ws.getRoot().getProject("External Files");
-            if (!project.exists()) {
-                try {
-                    project.create(null);
-                } catch (CoreException e) {
-                    log.error("unable to create Workspace " + e.getMessage());
-                    return;
-                }
-            }
-
-            // Load configuration
-            Configuration configuration = this.loadConfiguration();
-
-            // Process files
-            for (int i = 0, n = files.size(); i < n; i++) {
-                File file = files.get(i);
-                if (file.exists()) {
-                    if (file.canWrite()) {
-                        ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom(
-                                project.getFile(new org.eclipse.core.runtime.Path(file.getPath())));
-                        SourceManipulator source;
-                        try {
-                            source = new SourceManipulator(compilationUnit, configuration);
-                            if (!headerOnly) {
-                                source.addJavadoc(null);
-                            } else {
-                                source.setForceAddHeader(headerOnly);
-                                source.addJavadoc(new IMember[0], null);
-                            }
-                        } catch (IOException e) {
-                            getLog().error("", e);
-                            rc.skippedCount++;
-                        } catch (Exception e) {
-                            getLog().error("", e);
-                            rc.skippedCount++;
-                        }
-                    } else {
-                        rc.readOnlyCount++;
-                    }
-                } else {
-                    rc.failCount++;
-                }
-            }
-
-            // Shutdown
-            try {
-                plugin.stop(InternalPlatform.getDefault().getBundleContext());
-            } catch (Exception e) {
-                log.error("unable to shutdown plugin " + e.getMessage());
-                return;
-            }
-
-            // Finish processing
-            long endClock = System.currentTimeMillis();
-
-            log.info("Successfully formatted: " + rc.successCount + FILE_S);
-            log.info("Fail to format:         " + rc.failCount + FILE_S);
-            log.info("Skipped:                " + rc.skippedCount + FILE_S);
-            log.info("Read only skipped:      " + rc.readOnlyCount + FILE_S);
-            log.info("Approximate time taken: " + ((endClock - startClock) / 1000) + "s");
         }
 
-    }
-
-    /**
-     * Ensures a minimal Eclipse workspace exists at the given location. Creates the .metadata directory if missing.
-     *
-     * @param workspaceDir
-     *            the workspace dir
-     *
-     * @throws IOException
-     *             Signals that an I/O exception has occurred.
-     */
-    private void ensureMinimalWorkspace(Path workspaceDir) throws IOException {
-        if (!Files.exists(workspaceDir)) {
-            Files.createDirectories(workspaceDir);
-        }
-        Path metadataDir = workspaceDir.resolve(".metadata");
-        if (!Files.exists(metadataDir)) {
-            Files.createDirectories(metadataDir);
-        }
     }
 
     /**
@@ -288,44 +184,30 @@ public class JautodocMojo extends AbstractMojo {
      *
      * @return the configuration
      */
-    private Configuration loadConfiguration() {
-        final Configuration configuration = new Configuration();
+    private JautodocConfiguration loadConfiguration() {
+        final JautodocConfiguration configuration = new JautodocConfiguration();
         configuration.setAddHeader(this.addHeader);
         configuration.setAddTodoForAutodoc(this.addTodoForAutodoc);
         configuration.setCommentFields(this.commentFields);
+        configuration.setCommentMethods(this.commentMethods);
         configuration.setCommentTypes(this.commentTypes);
-        if (this.mode != null && this.mode.equals("complete")) {
-            configuration.setCompleteExistingJavadoc(true);
-        }
         configuration.setCreateDummyComment(this.createDummyComment);
         configuration.setExcludeGetterSetter(this.excludeGetterSetter);
-        // configuration.setExcludeOverriding(excludeOverriding);
-        // configuration.setGetSetFromFieldReplacements(getterSetterFromFieldReplacements);
+        configuration.setExcludeOverrides(this.excludeOverrides);
         configuration.setGetterSetterFromField(this.getterSetterFromField);
         configuration.setGetterSetterFromFieldFirst(this.getterSetterFromFieldFirst);
         configuration.setGetterSetterFromFieldReplace(this.getterSetterFromFieldReplace);
         configuration.setGetterSetterOnly(this.commentGetterSetterOnly);
-        // configuration.setHeaderText(headerText);
-        // configuration.setIncludeSubPackages(includeSubPackages);
-        if (this.mode != null && this.mode.equals("keep")) {
-            configuration.setKeepExistingJavadoc(true);
-        }
         configuration.setMultiCommentHeader(this.multiCommentHeader);
-        // configuration.setPackageDocText(packageDocText);
-        // configuration.setPackageInfoText(packageInfoText);
-        // configuration.setProperties(properties);
-        if (this.mode != null && this.mode.equals("replace")) {
-            configuration.setReplaceExistingJavadoc(true);
-        }
         configuration.setReplaceHeader(this.replaceHeader);
         configuration.setSingleLineComment(this.singleLineComment);
-        // configuration.setTagOrder(tagOrder);
         configuration.setUseEclipseFormatter(this.useEclipseFormatter);
-        // configuration.setUsePackageInfo(usePackageInfo);
         configuration.setVisibilityPackage(this.commentPackage);
         configuration.setVisibilityPrivate(this.commentPrivate);
         configuration.setVisibilityProtected(this.commentProtected);
         configuration.setVisibilityPublic(this.commentPublic);
+        configuration.setHeaderOnly(this.headerOnly);
+        configuration.setMode(JautodocMode.fromString(this.mode));
         return configuration;
     }
 
@@ -354,24 +236,6 @@ public class JautodocMojo extends AbstractMojo {
             foundFiles.add(newBasedir.toPath().resolve(filename).toFile());
         }
         return foundFiles;
-    }
-
-    /**
-     * The Class ResultCollector.
-     */
-    class ResultCollector {
-
-        /** The success count. */
-        int successCount;
-
-        /** The fail count. */
-        int failCount;
-
-        /** The skipped count. */
-        int skippedCount;
-
-        /** The read only count. */
-        int readOnlyCount;
     }
 
 }

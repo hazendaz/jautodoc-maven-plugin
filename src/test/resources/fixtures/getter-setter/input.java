@@ -6,7 +6,18 @@
  *
  *     https://www.eclipse.org/legal/epl-v10.html.
  */
-/**
- * Contains jautodoc command for this plugin.
- */
-package com.hazendaz.maven.jautodoc;
+package com.example;
+
+public class GetterSetter {
+
+    /** The user name. */
+    private String userName;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+}

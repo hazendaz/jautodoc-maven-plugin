@@ -6,7 +6,10 @@
  *
  *     https://www.eclipse.org/legal/epl-v10.html.
  */
-/**
- * Contains jautodoc command for this plugin.
- */
-package com.hazendaz.maven.jautodoc;
+package com.example;
+
+public class HeaderInput {
+
+    public void hello() {
+    }
+}
