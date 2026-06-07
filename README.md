@@ -2,6 +2,7 @@ Jautodoc Maven Plugin
 =====================
 
 [![Java CI](https://github.com/hazendaz/jautodoc-maven-plugin/actions/workflows/ci.yaml/badge.svg)](https://github.com/hazendaz/jautodoc-maven-plugin/actions/workflows/ci.yaml)
+[![Coverage Status](https://coveralls.io/repos/github/hazendaz/jautodoc-maven-plugin/badge.svg?branch=master)](https://coveralls.io/github/hazendaz/jautodoc-maven-plugin?branch=master)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.hazendaz.,avem/jautodoc-maven-plugin.svg)](https://central.sonatype.com/artifact/com.github.hazendaz.maven/jautodoc-maven-plugin)
 [![Eclipse](https://img.shields.io/badge/license-Eclipse-blue.svg)](https://www.eclipse.org/legal/epl-v10.html)
 
