@@ -64,11 +64,11 @@ public class JautodocMojo extends AbstractMojo {
     private boolean commentPackage;
 
     /** Comment protected members. */
-    @Parameter(defaultValue = "false", property = "commentProtected")
+    @Parameter(defaultValue = "true", property = "commentProtected")
     private boolean commentProtected;
 
     /** Comment private members. */
-    @Parameter(defaultValue = "false", property = "commentPrivate")
+    @Parameter(defaultValue = "true", property = "commentPrivate")
     private boolean commentPrivate;
 
     /** Comment types. */

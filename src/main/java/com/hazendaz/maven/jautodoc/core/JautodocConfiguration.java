@@ -45,10 +45,10 @@ public final class JautodocConfiguration {
     private boolean visibilityPackage = true;
 
     /** Comment protected members. */
-    private boolean visibilityProtected;
+    private boolean visibilityProtected = true;
 
     /** Comment private members. */
-    private boolean visibilityPrivate;
+    private boolean visibilityPrivate = true;
 
     // ---- Member-type filters ----
 
