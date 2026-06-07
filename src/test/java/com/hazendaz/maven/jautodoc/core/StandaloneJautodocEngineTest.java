@@ -346,19 +346,19 @@ public class StandaloneJautodocEngineTest {
 
     @Test
     void modeFromString_nullDefaultsToComplete() {
-        assertEquals(JautodocMode.COMPLETE, JautodocMode.fromString(null, true));
+        assertEquals(JautodocMode.COMPLETE, JautodocMode.fromString(null));
     }
 
     @Test
     void modeFromString_caseInsensitive() {
-        assertEquals(JautodocMode.KEEP, JautodocMode.fromString("KEEP", false));
-        assertEquals(JautodocMode.REPLACE, JautodocMode.fromString("Replace", false));
-        assertEquals(JautodocMode.COMPLETE, JautodocMode.fromString("complete", false));
+        assertEquals(JautodocMode.KEEP, JautodocMode.fromString("KEEP"));
+        assertEquals(JautodocMode.REPLACE, JautodocMode.fromString("Replace"));
+        assertEquals(JautodocMode.COMPLETE, JautodocMode.fromString("complete"));
     }
 
     @Test
     void modeFromString_unknownFallsBackToComplete() {
-        assertEquals(JautodocMode.COMPLETE, JautodocMode.fromString("bogus", false));
+        assertEquals(JautodocMode.COMPLETE, JautodocMode.fromString("bogus"));
     }
 
     // =========================================================================

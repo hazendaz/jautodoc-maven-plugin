@@ -92,11 +92,6 @@ public final class JautodocConfiguration {
     /** Replace existing getter/setter Javadoc when deriving from field. */
     private boolean getterSetterFromFieldReplace = true;
 
-    // ---- Compatibility ----
-
-    /** Preserve legacy parameter mapping. */
-    private boolean compatibilityMode = true;
-
     // =========================================================================
     // Getters & setters
     // =========================================================================
@@ -517,24 +512,5 @@ public final class JautodocConfiguration {
      */
     public void setGetterSetterFromFieldReplace(boolean getterSetterFromFieldReplace) {
         this.getterSetterFromFieldReplace = getterSetterFromFieldReplace;
-    }
-
-    /**
-     * Checks if is compatibility mode.
-     *
-     * @return true, if is compatibility mode
-     */
-    public boolean isCompatibilityMode() {
-        return compatibilityMode;
-    }
-
-    /**
-     * Sets the compatibility mode.
-     *
-     * @param compatibilityMode
-     *            the new compatibility mode
-     */
-    public void setCompatibilityMode(boolean compatibilityMode) {
-        this.compatibilityMode = compatibilityMode;
     }
 }

@@ -36,12 +36,10 @@ public enum JautodocMode {
      *
      * @param mode
      *            the mode string (case-insensitive), may be null
-     * @param compatibilityMode
-     *            retained for future compatibility expansions; currently unused
      *
      * @return the resolved JautodocMode, never null
      */
-    public static JautodocMode fromString(String mode, boolean compatibilityMode) {
+    public static JautodocMode fromString(String mode) {
         if (mode == null || mode.isBlank()) {
             return COMPLETE;
         }

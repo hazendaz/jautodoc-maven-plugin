@@ -135,10 +135,6 @@ public class JautodocMojo extends AbstractMojo {
     @Parameter(defaultValue = "false", property = "headerOnly")
     private boolean headerOnly;
 
-    /** Preserve legacy behavior and parameter compatibility. */
-    @Parameter(defaultValue = "true", property = "compatibilityMode")
-    private boolean compatibilityMode;
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         // Check if plugin run should be skipped
@@ -191,7 +187,6 @@ public class JautodocMojo extends AbstractMojo {
         configuration.setCommentFields(this.commentFields);
         configuration.setCommentMethods(this.commentMethods);
         configuration.setCommentTypes(this.commentTypes);
-        configuration.setCompatibilityMode(this.compatibilityMode);
         configuration.setCreateDummyComment(this.createDummyComment);
         configuration.setExcludeGetterSetter(this.excludeGetterSetter);
         configuration.setGetterSetterFromField(this.getterSetterFromField);
@@ -207,7 +202,7 @@ public class JautodocMojo extends AbstractMojo {
         configuration.setVisibilityProtected(this.commentProtected);
         configuration.setVisibilityPublic(this.commentPublic);
         configuration.setHeaderOnly(this.headerOnly);
-        configuration.setMode(JautodocMode.fromString(this.mode, this.compatibilityMode));
+        configuration.setMode(JautodocMode.fromString(this.mode));
         return configuration;
     }
 
