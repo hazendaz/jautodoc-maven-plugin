@@ -34,4 +34,11 @@ Example Usage
 </plugin>
 ```
 
-WIP - This project is a work in progress.  To even begin to work, needs jautodoc deployed to central.  Code written in a number of years old and needs to be looked at again.  Point of pushing this up is to finally suggest work might happen here.
+This project is a work in progress based off jautodoc using public eclipse api's.  Parts of code needed rewritten due to jautodoc not being in central and hard requirement on eclipse workspace.  This project does not require the eclipse workspace.
+
+This is under beta until parity between the eclipse plugin and this plugin can be reached.
+
+Outstanding issues
+- The auto generated content is not the same currently.
+- Adding to existing javadocs currently not supported.
+- But with listeners and 'get' styled tests currently do not occur here like with jautodoc but making mention so it doesn't pop up later.
