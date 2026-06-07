@@ -333,7 +333,7 @@ public class StandaloneJautodocEngineTest {
 
         String result = new StandaloneJautodocEngine(cfg).processSource(source);
 
-        assertFalse(result.contains("To string") || result.contains("/** To string"),
+        assertFalse(result.contains("To string"),
                 "@Override method must not be commented when excludeOverrides=true");
         assertTrue(result.contains("Do work"), "Non-override method must still be commented");
     }
