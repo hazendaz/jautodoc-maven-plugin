@@ -91,6 +91,10 @@ public class JautodocMojo extends AbstractMojo {
     @Parameter(defaultValue = "false", property = "excludeGetterSetter")
     private boolean excludeGetterSetter;
 
+    /** Exclude methods annotated with @Override. */
+    @Parameter(defaultValue = "true", property = "excludeOverrides")
+    private boolean excludeOverrides;
+
     /** Add 'todo' auto generated javadoc. */
     @Parameter(defaultValue = "false", property = "addTodoForAutodoc")
     private boolean addTodoForAutodoc;
@@ -189,6 +193,7 @@ public class JautodocMojo extends AbstractMojo {
         configuration.setCommentTypes(this.commentTypes);
         configuration.setCreateDummyComment(this.createDummyComment);
         configuration.setExcludeGetterSetter(this.excludeGetterSetter);
+        configuration.setExcludeOverrides(this.excludeOverrides);
         configuration.setGetterSetterFromField(this.getterSetterFromField);
         configuration.setGetterSetterFromFieldFirst(this.getterSetterFromFieldFirst);
         configuration.setGetterSetterFromFieldReplace(this.getterSetterFromFieldReplace);

@@ -321,6 +321,36 @@ public class StandaloneJautodocEngineTest {
     }
 
     // =========================================================================
+    // excludeOverrides
+    // =========================================================================
+
+    @Test
+    void excludeOverrides_skipsOverriddenMethods() {
+        String source = "package p;\npublic class C {\n" + "    @Override\n"
+                + "    public String toString() { return \"\"; }\n" + "    public void doWork() {}\n" + "}\n";
+        JautodocConfiguration cfg = defaults();
+        cfg.setExcludeOverrides(true);
+
+        String result = new StandaloneJautodocEngine(cfg).processSource(source);
+
+        assertFalse(result.contains("To string") || result.contains("/** To string"),
+                "@Override method must not be commented when excludeOverrides=true");
+        assertTrue(result.contains("Do work"), "Non-override method must still be commented");
+    }
+
+    @Test
+    void excludeOverrides_false_commentsOverriddenMethods() {
+        String source = "package p;\npublic class C {\n" + "    @Override\n"
+                + "    public String toString() { return \"\"; }\n" + "}\n";
+        JautodocConfiguration cfg = defaults();
+        cfg.setExcludeOverrides(false);
+
+        String result = new StandaloneJautodocEngine(cfg).processSource(source);
+
+        assertTrue(result.contains("To string"), "@Override method must be commented when excludeOverrides=false");
+    }
+
+    // =========================================================================
     // Result counters
     // =========================================================================
 

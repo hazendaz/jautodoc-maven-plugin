@@ -67,6 +67,9 @@ public final class JautodocConfiguration {
     /** Exclude getter and setter methods from commenting. */
     private boolean excludeGetterSetter;
 
+    /** Exclude methods that override or implement a parent/interface method (@Override). */
+    private boolean excludeOverrides = true;
+
     // ---- Comment-generation options ----
 
     /** Generate a dummy description comment from the element name. */
@@ -379,6 +382,25 @@ public final class JautodocConfiguration {
      */
     public void setExcludeGetterSetter(boolean excludeGetterSetter) {
         this.excludeGetterSetter = excludeGetterSetter;
+    }
+
+    /**
+     * Checks if is exclude overrides.
+     *
+     * @return true, if is exclude overrides
+     */
+    public boolean isExcludeOverrides() {
+        return excludeOverrides;
+    }
+
+    /**
+     * Sets the exclude overrides.
+     *
+     * @param excludeOverrides
+     *            the new exclude overrides
+     */
+    public void setExcludeOverrides(boolean excludeOverrides) {
+        this.excludeOverrides = excludeOverrides;
     }
 
     /**

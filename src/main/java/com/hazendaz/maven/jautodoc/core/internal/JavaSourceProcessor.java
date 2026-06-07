@@ -30,6 +30,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.Javadoc;
+import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.SimpleName;
@@ -220,6 +221,11 @@ public final class JavaSourceProcessor {
         @Override
         public boolean visit(MethodDeclaration node) {
             if (!config.isCommentMethods() || !shouldCommentByVisibility(node.getModifiers())) {
+                return false;
+            }
+
+            // Skip methods that override/implement a parent or interface method
+            if (config.isExcludeOverrides() && hasOverrideAnnotation(node)) {
                 return false;
             }
 
@@ -439,6 +445,20 @@ public final class JavaSourceProcessor {
             String name = md.getName().getIdentifier();
             int params = md.parameters().size();
             return generator.isGetter(name, params) || generator.isSetter(name, params);
+        }
+
+        /** Returns true when the method declaration has an {@code @Override} annotation. */
+        @SuppressWarnings("unchecked")
+        private static boolean hasOverrideAnnotation(MethodDeclaration node) {
+            for (Object mod : node.modifiers()) {
+                if (mod instanceof MarkerAnnotation) {
+                    String name = ((MarkerAnnotation) mod).getTypeName().getFullyQualifiedName();
+                    if ("Override".equals(name) || "java.lang.Override".equals(name)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         // ---- COMPLETE-mode tag completion ----
