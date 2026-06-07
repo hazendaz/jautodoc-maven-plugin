@@ -26,7 +26,7 @@ import org.junit.jupiter.api.io.TempDir;
  * Fixture-based golden tests for {@link StandaloneJautodocEngine}. Each test loads an {@code input.java} resource,
  * processes it with a configured engine, and compares the result to a corresponding {@code expected-*.java} resource.
  */
-class StandaloneJautodocEngineTest {
+public class StandaloneJautodocEngineTest {
 
     @TempDir
     Path tempDir;
