@@ -141,36 +141,36 @@ public class JautodocMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         // Check if plugin run should be skipped
         if (this.skip) {
-            getLog().info("Jautodoc is skipped");
+            this.getLog().info("Jautodoc is skipped");
             return;
         }
 
-        long startClock = System.currentTimeMillis();
+        final long startClock = System.currentTimeMillis();
 
-        List<File> files = new ArrayList<>();
+        final List<File> files = new ArrayList<>();
         if (this.basedir != null && this.basedir.exists() && this.basedir.isDirectory()) {
-            files.addAll(addCollectionFiles(this.basedir));
+            files.addAll(this.addCollectionFiles(this.basedir));
         }
 
-        int numberOfFiles = files.size();
-        Log log = getLog();
+        final int numberOfFiles = files.size();
+        final Log log = this.getLog();
         log.info("Number of files to be jautodoc'd: " + numberOfFiles);
 
         if (numberOfFiles > 0) {
             try {
-                JautodocConfiguration configuration = this.loadConfiguration();
-                StandaloneJautodocEngine engine = new StandaloneJautodocEngine(configuration);
-                JautodocResult rc = engine.process(files.stream().map(File::toPath).collect(Collectors.toList()));
+                final JautodocConfiguration configuration = this.loadConfiguration();
+                final StandaloneJautodocEngine engine = new StandaloneJautodocEngine(configuration);
+                final JautodocResult rc = engine.process(files.stream().map(File::toPath).collect(Collectors.toList()));
 
                 // Finish processing
-                long endClock = System.currentTimeMillis();
+                final long endClock = System.currentTimeMillis();
 
-                log.info("Successfully formatted: " + rc.getSuccessCount() + FILE_S);
-                log.info("Fail to format:         " + rc.getFailCount() + FILE_S);
-                log.info("Skipped:                " + rc.getSkippedCount() + FILE_S);
-                log.info("Read only skipped:      " + rc.getReadOnlyCount() + FILE_S);
-                log.info("Approximate time taken: " + ((endClock - startClock) / 1000) + "s");
-            } catch (RuntimeException e) {
+                log.info("Successfully formatted: " + rc.getSuccessCount() + JautodocMojo.FILE_S);
+                log.info("Fail to format:         " + rc.getFailCount() + JautodocMojo.FILE_S);
+                log.info("Skipped:                " + rc.getSkippedCount() + JautodocMojo.FILE_S);
+                log.info("Read only skipped:      " + rc.getReadOnlyCount() + JautodocMojo.FILE_S);
+                log.info("Approximate time taken: " + (endClock - startClock) / 1000 + "s");
+            } catch (final RuntimeException e) {
                 throw new MojoExecutionException("Unable to process sources", e);
             }
         }
@@ -217,8 +217,8 @@ public class JautodocMojo extends AbstractMojo {
      *
      * @return the list
      */
-    List<File> addCollectionFiles(File newBasedir) {
-        List<String> includes = new ArrayList<>();
+    List<File> addCollectionFiles(final File newBasedir) {
+        final List<String> includes = new ArrayList<>();
         includes.add("**/*.java");
 
         final DirectoryScanner ds = new DirectoryScanner();
@@ -229,8 +229,8 @@ public class JautodocMojo extends AbstractMojo {
         ds.setFollowSymlinks(false);
         ds.scan();
 
-        List<File> foundFiles = new ArrayList<>();
-        for (String filename : ds.getIncludedFiles()) {
+        final List<File> foundFiles = new ArrayList<>();
+        for (final String filename : ds.getIncludedFiles()) {
             foundFiles.add(newBasedir.toPath().resolve(filename).toFile());
         }
         return foundFiles;

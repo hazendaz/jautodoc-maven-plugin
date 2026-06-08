@@ -32,7 +32,7 @@ final class JavadocEdit {
      * @param text
      *            the text
      */
-    JavadocEdit(int offset, int length, String text) {
+    JavadocEdit(final int offset, final int length, final String text) {
         this.offset = offset;
         this.length = length;
         this.text = text;

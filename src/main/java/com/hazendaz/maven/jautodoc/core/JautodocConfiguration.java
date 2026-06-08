@@ -103,7 +103,7 @@ public final class JautodocConfiguration {
      * @return the mode
      */
     public JautodocMode getMode() {
-        return mode;
+        return this.mode;
     }
 
     /**
@@ -112,7 +112,7 @@ public final class JautodocConfiguration {
      * @param mode
      *            the new mode
      */
-    public void setMode(JautodocMode mode) {
+    public void setMode(final JautodocMode mode) {
         this.mode = mode != null ? mode : JautodocMode.COMPLETE;
     }
 
@@ -122,7 +122,7 @@ public final class JautodocConfiguration {
      * @return true, if is adds the header
      */
     public boolean isAddHeader() {
-        return addHeader;
+        return this.addHeader;
     }
 
     /**
@@ -131,7 +131,7 @@ public final class JautodocConfiguration {
      * @param addHeader
      *            the new adds the header
      */
-    public void setAddHeader(boolean addHeader) {
+    public void setAddHeader(final boolean addHeader) {
         this.addHeader = addHeader;
     }
 
@@ -141,7 +141,7 @@ public final class JautodocConfiguration {
      * @return true, if is replace header
      */
     public boolean isReplaceHeader() {
-        return replaceHeader;
+        return this.replaceHeader;
     }
 
     /**
@@ -150,7 +150,7 @@ public final class JautodocConfiguration {
      * @param replaceHeader
      *            the new replace header
      */
-    public void setReplaceHeader(boolean replaceHeader) {
+    public void setReplaceHeader(final boolean replaceHeader) {
         this.replaceHeader = replaceHeader;
     }
 
@@ -160,7 +160,7 @@ public final class JautodocConfiguration {
      * @return true, if is multi comment header
      */
     public boolean isMultiCommentHeader() {
-        return multiCommentHeader;
+        return this.multiCommentHeader;
     }
 
     /**
@@ -169,7 +169,7 @@ public final class JautodocConfiguration {
      * @param multiCommentHeader
      *            the new multi comment header
      */
-    public void setMultiCommentHeader(boolean multiCommentHeader) {
+    public void setMultiCommentHeader(final boolean multiCommentHeader) {
         this.multiCommentHeader = multiCommentHeader;
     }
 
@@ -179,7 +179,7 @@ public final class JautodocConfiguration {
      * @return true, if is header only
      */
     public boolean isHeaderOnly() {
-        return headerOnly;
+        return this.headerOnly;
     }
 
     /**
@@ -188,7 +188,7 @@ public final class JautodocConfiguration {
      * @param headerOnly
      *            the new header only
      */
-    public void setHeaderOnly(boolean headerOnly) {
+    public void setHeaderOnly(final boolean headerOnly) {
         this.headerOnly = headerOnly;
     }
 
@@ -198,7 +198,7 @@ public final class JautodocConfiguration {
      * @return the header text
      */
     public String getHeaderText() {
-        return headerText;
+        return this.headerText;
     }
 
     /**
@@ -207,7 +207,7 @@ public final class JautodocConfiguration {
      * @param headerText
      *            the new header text
      */
-    public void setHeaderText(String headerText) {
+    public void setHeaderText(final String headerText) {
         this.headerText = headerText != null ? headerText : "";
     }
 
@@ -217,7 +217,7 @@ public final class JautodocConfiguration {
      * @return true, if is visibility public
      */
     public boolean isVisibilityPublic() {
-        return visibilityPublic;
+        return this.visibilityPublic;
     }
 
     /**
@@ -226,7 +226,7 @@ public final class JautodocConfiguration {
      * @param visibilityPublic
      *            the new visibility public
      */
-    public void setVisibilityPublic(boolean visibilityPublic) {
+    public void setVisibilityPublic(final boolean visibilityPublic) {
         this.visibilityPublic = visibilityPublic;
     }
 
@@ -236,7 +236,7 @@ public final class JautodocConfiguration {
      * @return true, if is visibility package
      */
     public boolean isVisibilityPackage() {
-        return visibilityPackage;
+        return this.visibilityPackage;
     }
 
     /**
@@ -245,7 +245,7 @@ public final class JautodocConfiguration {
      * @param visibilityPackage
      *            the new visibility package
      */
-    public void setVisibilityPackage(boolean visibilityPackage) {
+    public void setVisibilityPackage(final boolean visibilityPackage) {
         this.visibilityPackage = visibilityPackage;
     }
 
@@ -255,7 +255,7 @@ public final class JautodocConfiguration {
      * @return true, if is visibility protected
      */
     public boolean isVisibilityProtected() {
-        return visibilityProtected;
+        return this.visibilityProtected;
     }
 
     /**
@@ -264,7 +264,7 @@ public final class JautodocConfiguration {
      * @param visibilityProtected
      *            the new visibility protected
      */
-    public void setVisibilityProtected(boolean visibilityProtected) {
+    public void setVisibilityProtected(final boolean visibilityProtected) {
         this.visibilityProtected = visibilityProtected;
     }
 
@@ -274,7 +274,7 @@ public final class JautodocConfiguration {
      * @return true, if is visibility private
      */
     public boolean isVisibilityPrivate() {
-        return visibilityPrivate;
+        return this.visibilityPrivate;
     }
 
     /**
@@ -283,7 +283,7 @@ public final class JautodocConfiguration {
      * @param visibilityPrivate
      *            the new visibility private
      */
-    public void setVisibilityPrivate(boolean visibilityPrivate) {
+    public void setVisibilityPrivate(final boolean visibilityPrivate) {
         this.visibilityPrivate = visibilityPrivate;
     }
 
@@ -293,7 +293,7 @@ public final class JautodocConfiguration {
      * @return true, if is comment types
      */
     public boolean isCommentTypes() {
-        return commentTypes;
+        return this.commentTypes;
     }
 
     /**
@@ -302,7 +302,7 @@ public final class JautodocConfiguration {
      * @param commentTypes
      *            the new comment types
      */
-    public void setCommentTypes(boolean commentTypes) {
+    public void setCommentTypes(final boolean commentTypes) {
         this.commentTypes = commentTypes;
     }
 
@@ -312,7 +312,7 @@ public final class JautodocConfiguration {
      * @return true, if is comment fields
      */
     public boolean isCommentFields() {
-        return commentFields;
+        return this.commentFields;
     }
 
     /**
@@ -321,7 +321,7 @@ public final class JautodocConfiguration {
      * @param commentFields
      *            the new comment fields
      */
-    public void setCommentFields(boolean commentFields) {
+    public void setCommentFields(final boolean commentFields) {
         this.commentFields = commentFields;
     }
 
@@ -331,7 +331,7 @@ public final class JautodocConfiguration {
      * @return true, if is comment methods
      */
     public boolean isCommentMethods() {
-        return commentMethods;
+        return this.commentMethods;
     }
 
     /**
@@ -340,7 +340,7 @@ public final class JautodocConfiguration {
      * @param commentMethods
      *            the new comment methods
      */
-    public void setCommentMethods(boolean commentMethods) {
+    public void setCommentMethods(final boolean commentMethods) {
         this.commentMethods = commentMethods;
     }
 
@@ -350,7 +350,7 @@ public final class JautodocConfiguration {
      * @return true, if is getter setter only
      */
     public boolean isGetterSetterOnly() {
-        return getterSetterOnly;
+        return this.getterSetterOnly;
     }
 
     /**
@@ -359,7 +359,7 @@ public final class JautodocConfiguration {
      * @param getterSetterOnly
      *            the new getter setter only
      */
-    public void setGetterSetterOnly(boolean getterSetterOnly) {
+    public void setGetterSetterOnly(final boolean getterSetterOnly) {
         this.getterSetterOnly = getterSetterOnly;
     }
 
@@ -369,7 +369,7 @@ public final class JautodocConfiguration {
      * @return true, if is exclude getter setter
      */
     public boolean isExcludeGetterSetter() {
-        return excludeGetterSetter;
+        return this.excludeGetterSetter;
     }
 
     /**
@@ -378,7 +378,7 @@ public final class JautodocConfiguration {
      * @param excludeGetterSetter
      *            the new exclude getter setter
      */
-    public void setExcludeGetterSetter(boolean excludeGetterSetter) {
+    public void setExcludeGetterSetter(final boolean excludeGetterSetter) {
         this.excludeGetterSetter = excludeGetterSetter;
     }
 
@@ -388,7 +388,7 @@ public final class JautodocConfiguration {
      * @return true, if is exclude overrides
      */
     public boolean isExcludeOverrides() {
-        return excludeOverrides;
+        return this.excludeOverrides;
     }
 
     /**
@@ -397,7 +397,7 @@ public final class JautodocConfiguration {
      * @param excludeOverrides
      *            the new exclude overrides
      */
-    public void setExcludeOverrides(boolean excludeOverrides) {
+    public void setExcludeOverrides(final boolean excludeOverrides) {
         this.excludeOverrides = excludeOverrides;
     }
 
@@ -407,7 +407,7 @@ public final class JautodocConfiguration {
      * @return true, if is creates the dummy comment
      */
     public boolean isCreateDummyComment() {
-        return createDummyComment;
+        return this.createDummyComment;
     }
 
     /**
@@ -416,7 +416,7 @@ public final class JautodocConfiguration {
      * @param createDummyComment
      *            the new creates the dummy comment
      */
-    public void setCreateDummyComment(boolean createDummyComment) {
+    public void setCreateDummyComment(final boolean createDummyComment) {
         this.createDummyComment = createDummyComment;
     }
 
@@ -426,7 +426,7 @@ public final class JautodocConfiguration {
      * @return true, if is single line comment
      */
     public boolean isSingleLineComment() {
-        return singleLineComment;
+        return this.singleLineComment;
     }
 
     /**
@@ -435,7 +435,7 @@ public final class JautodocConfiguration {
      * @param singleLineComment
      *            the new single line comment
      */
-    public void setSingleLineComment(boolean singleLineComment) {
+    public void setSingleLineComment(final boolean singleLineComment) {
         this.singleLineComment = singleLineComment;
     }
 
@@ -445,7 +445,7 @@ public final class JautodocConfiguration {
      * @return true, if is adds the todo for autodoc
      */
     public boolean isAddTodoForAutodoc() {
-        return addTodoForAutodoc;
+        return this.addTodoForAutodoc;
     }
 
     /**
@@ -454,7 +454,7 @@ public final class JautodocConfiguration {
      * @param addTodoForAutodoc
      *            the new adds the todo for autodoc
      */
-    public void setAddTodoForAutodoc(boolean addTodoForAutodoc) {
+    public void setAddTodoForAutodoc(final boolean addTodoForAutodoc) {
         this.addTodoForAutodoc = addTodoForAutodoc;
     }
 
@@ -464,7 +464,7 @@ public final class JautodocConfiguration {
      * @return true, if is use eclipse formatter
      */
     public boolean isUseEclipseFormatter() {
-        return useEclipseFormatter;
+        return this.useEclipseFormatter;
     }
 
     /**
@@ -473,7 +473,7 @@ public final class JautodocConfiguration {
      * @param useEclipseFormatter
      *            the new use eclipse formatter
      */
-    public void setUseEclipseFormatter(boolean useEclipseFormatter) {
+    public void setUseEclipseFormatter(final boolean useEclipseFormatter) {
         this.useEclipseFormatter = useEclipseFormatter;
     }
 
@@ -483,7 +483,7 @@ public final class JautodocConfiguration {
      * @return true, if is getter setter from field
      */
     public boolean isGetterSetterFromField() {
-        return getterSetterFromField;
+        return this.getterSetterFromField;
     }
 
     /**
@@ -492,7 +492,7 @@ public final class JautodocConfiguration {
      * @param getterSetterFromField
      *            the new getter setter from field
      */
-    public void setGetterSetterFromField(boolean getterSetterFromField) {
+    public void setGetterSetterFromField(final boolean getterSetterFromField) {
         this.getterSetterFromField = getterSetterFromField;
     }
 
@@ -502,7 +502,7 @@ public final class JautodocConfiguration {
      * @return true, if is getter setter from field first
      */
     public boolean isGetterSetterFromFieldFirst() {
-        return getterSetterFromFieldFirst;
+        return this.getterSetterFromFieldFirst;
     }
 
     /**
@@ -511,7 +511,7 @@ public final class JautodocConfiguration {
      * @param getterSetterFromFieldFirst
      *            the new getter setter from field first
      */
-    public void setGetterSetterFromFieldFirst(boolean getterSetterFromFieldFirst) {
+    public void setGetterSetterFromFieldFirst(final boolean getterSetterFromFieldFirst) {
         this.getterSetterFromFieldFirst = getterSetterFromFieldFirst;
     }
 
@@ -521,7 +521,7 @@ public final class JautodocConfiguration {
      * @return true, if is getter setter from field replace
      */
     public boolean isGetterSetterFromFieldReplace() {
-        return getterSetterFromFieldReplace;
+        return this.getterSetterFromFieldReplace;
     }
 
     /**
@@ -530,7 +530,7 @@ public final class JautodocConfiguration {
      * @param getterSetterFromFieldReplace
      *            the new getter setter from field replace
      */
-    public void setGetterSetterFromFieldReplace(boolean getterSetterFromFieldReplace) {
+    public void setGetterSetterFromFieldReplace(final boolean getterSetterFromFieldReplace) {
         this.getterSetterFromFieldReplace = getterSetterFromFieldReplace;
     }
 }

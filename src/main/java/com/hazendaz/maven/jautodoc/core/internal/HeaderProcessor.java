@@ -35,23 +35,23 @@ public final class HeaderProcessor {
      *
      * @return the source text with header applied; identical to the input when no action is needed
      */
-    public static String process(String source, JautodocConfiguration config) {
+    public static String process(final String source, final JautodocConfiguration config) {
         if (!config.isAddHeader() || config.getHeaderText() == null || config.getHeaderText().isBlank()) {
             return source;
         }
 
-        String newHeader = buildHeaderComment(config);
-        int existingEnd = findExistingHeaderEnd(source);
+        final String newHeader = HeaderProcessor.buildHeaderComment(config);
+        final int existingEnd = HeaderProcessor.findExistingHeaderEnd(source);
 
         if (existingEnd >= 0) {
             if (!config.isReplaceHeader()) {
                 return source; // keep existing header
             }
             // Replace existing header, stripping any leading blank lines between it and the rest
-            String remainder = source.substring(existingEnd);
+            final String remainder = source.substring(existingEnd);
             // Strip only the immediately following newline(s) so we can re-add one
             int skip = 0;
-            while (skip < remainder.length() && remainder.charAt(skip) == '\n'
+            if (skip < remainder.length() && remainder.charAt(skip) == '\n'
                     || skip < remainder.length() && remainder.charAt(skip) == '\r') {
                 if (remainder.charAt(skip) == '\r' && skip + 1 < remainder.length()
                         && remainder.charAt(skip + 1) == '\n') {
@@ -59,7 +59,6 @@ public final class HeaderProcessor {
                 } else {
                     skip++;
                 }
-                break; // only skip one newline
             }
             return newHeader + "\n" + remainder.substring(skip);
         }
@@ -84,19 +83,16 @@ public final class HeaderProcessor {
      *
      * @return the character offset after the closing delimiter, or -1
      */
-    static int findExistingHeaderEnd(String source) {
+    static int findExistingHeaderEnd(final String source) {
         int pos = 0;
         // Skip leading whitespace
         while (pos < source.length() && Character.isWhitespace(source.charAt(pos))) {
             pos++;
         }
-        if (pos + 1 >= source.length()) {
-            return -1;
-        }
-        if (source.charAt(pos) != '/' || source.charAt(pos + 1) != '*') {
+        if ((pos + 1 >= source.length()) || source.charAt(pos) != '/' || source.charAt(pos + 1) != '*') {
             return -1; // file doesn't start with a block comment
         }
-        int closeIdx = source.indexOf("*/", pos + 2);
+        final int closeIdx = source.indexOf("*/", pos + 2);
         if (closeIdx < 0) {
             return -1;
         }
@@ -107,11 +103,11 @@ public final class HeaderProcessor {
     // Private helpers
     // -------------------------------------------------------------------------
 
-    private static String buildHeaderComment(JautodocConfiguration config) {
-        String text = config.getHeaderText().trim();
-        String open = config.isMultiCommentHeader() ? "/**" : "/*";
-        StringBuilder sb = new StringBuilder(open).append('\n');
-        for (String line : text.split("\r?\n", -1)) {
+    private static String buildHeaderComment(final JautodocConfiguration config) {
+        final String text = config.getHeaderText().trim();
+        final String open = config.isMultiCommentHeader() ? "/**" : "/*";
+        final StringBuilder sb = new StringBuilder(open).append('\n');
+        for (final String line : text.split("\r?\n", -1)) {
             if (line.isEmpty()) {
                 sb.append(" *\n");
             } else {

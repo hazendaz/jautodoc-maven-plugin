@@ -37,7 +37,7 @@ public enum JautodocMode {
      *
      * @return the resolved JautodocMode, never null
      */
-    public static JautodocMode fromString(String mode) {
+    public static JautodocMode fromString(final String mode) {
         if (mode == null || mode.isBlank()) {
             return COMPLETE;
         }

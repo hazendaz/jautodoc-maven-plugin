@@ -61,7 +61,7 @@ public final class JavaSourceProcessor {
      * @param config
      *            the config
      */
-    public JavaSourceProcessor(JautodocConfiguration config) {
+    public JavaSourceProcessor(final JautodocConfiguration config) {
         this.config = config;
         this.generator = new CommentTextGenerator();
     }
@@ -74,39 +74,38 @@ public final class JavaSourceProcessor {
      *
      * @return the string
      */
-    public String process(String source) {
-        if (config.isHeaderOnly()) {
+    public String process(final String source) {
+        if (this.config.isHeaderOnly()) {
             return source; // header-only mode: skip all Javadoc changes
         }
 
-        @SuppressWarnings("deprecation")
-        ASTParser parser = ASTParser.newParser(AST.JLS21);
+        final ASTParser parser = ASTParser.newParser(AST.JLS21);
         parser.setSource(source.toCharArray());
         parser.setKind(ASTParser.K_COMPILATION_UNIT);
 
-        Map<String, String> options = JavaCore.getOptions();
+        final Map<String, String> options = JavaCore.getOptions();
         options.put(JavaCore.COMPILER_SOURCE, "21");
         options.put(JavaCore.COMPILER_COMPLIANCE, "21");
         options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, "21");
         parser.setCompilerOptions(options);
 
-        CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+        final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 
         // Pre-build field-name → existing-Javadoc-text map for getterSetterFromField feature
-        Map<String, String> fieldJavadocMap = buildFieldJavadocMap(cu, source);
+        final Map<String, String> fieldJavadocMap = this.buildFieldJavadocMap(cu, source);
 
-        List<JavadocEdit> edits = new ArrayList<>();
-        cu.accept(new JavadocVisitor(source, config, generator, fieldJavadocMap, edits));
+        final List<JavadocEdit> edits = new ArrayList<>();
+        cu.accept(new JavadocVisitor(source, this.config, this.generator, fieldJavadocMap, edits));
 
         if (edits.isEmpty()) {
             return source;
         }
 
         // Apply in descending offset order to preserve positions
-        edits.sort(Comparator.comparingInt((JavadocEdit e) -> e.offset).reversed());
+        edits.sort(Comparator.comparingInt((final JavadocEdit e) -> e.offset).reversed());
 
-        StringBuilder sb = new StringBuilder(source);
-        for (JavadocEdit edit : edits) {
+        final StringBuilder sb = new StringBuilder(source);
+        for (final JavadocEdit edit : edits) {
             sb.replace(edit.offset, edit.offset + edit.length, edit.text);
         }
         return sb.toString();
@@ -116,20 +115,20 @@ public final class JavaSourceProcessor {
     // Pre-pass: field javadoc map
     // -------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
-    private Map<String, String> buildFieldJavadocMap(CompilationUnit cu, String source) {
-        Map<String, String> map = new HashMap<>();
-        if (!config.isGetterSetterFromField()) {
+    private Map<String, String> buildFieldJavadocMap(final CompilationUnit cu, final String source) {
+        final Map<String, String> map = new HashMap<>();
+        if (!this.config.isGetterSetterFromField()) {
             return map;
         }
         cu.accept(new ASTVisitor() {
             @Override
-            public boolean visit(FieldDeclaration node) {
-                Javadoc jdoc = node.getJavadoc();
+            public boolean visit(final FieldDeclaration node) {
+                final Javadoc jdoc = node.getJavadoc();
                 if (jdoc != null) {
-                    String text = source.substring(jdoc.getStartPosition(), jdoc.getStartPosition() + jdoc.getLength());
-                    for (Object obj : node.fragments()) {
-                        VariableDeclarationFragment frag = (VariableDeclarationFragment) obj;
+                    final String text = source.substring(jdoc.getStartPosition(),
+                            jdoc.getStartPosition() + jdoc.getLength());
+                    for (final Object obj : node.fragments()) {
+                        final VariableDeclarationFragment frag = (VariableDeclarationFragment) obj;
                         map.put(frag.getName().getIdentifier(), text);
                     }
                 }
@@ -151,8 +150,8 @@ public final class JavaSourceProcessor {
         private final Map<String, String> fieldJavadocMap;
         private final List<JavadocEdit> edits;
 
-        JavadocVisitor(String source, JautodocConfiguration config, CommentTextGenerator generator,
-                Map<String, String> fieldJavadocMap, List<JavadocEdit> edits) {
+        JavadocVisitor(final String source, final JautodocConfiguration config, final CommentTextGenerator generator,
+                final Map<String, String> fieldJavadocMap, final List<JavadocEdit> edits) {
             this.source = source;
             this.config = config;
             this.generator = generator;
@@ -163,93 +162,86 @@ public final class JavaSourceProcessor {
         // ---- Type declarations ----
 
         @Override
-        public boolean visit(TypeDeclaration node) {
-            if (config.isCommentTypes() && shouldCommentByVisibility(node.getModifiers())) {
-                String name = node.getName().getIdentifier();
-                String desc = generator.generateTypeComment(name, node.isInterface(), false, false);
-                addJavadocEdit(node, desc, List.of());
+        public boolean visit(final TypeDeclaration node) {
+            if (this.config.isCommentTypes() && this.shouldCommentByVisibility(node.getModifiers())) {
+                final String name = node.getName().getIdentifier();
+                final String desc = this.generator.generateTypeComment(name, node.isInterface(), false, false);
+                this.addJavadocEdit(node, desc, List.of());
             }
             return true; // always recurse into body
         }
 
         @Override
-        public boolean visit(EnumDeclaration node) {
-            if (config.isCommentTypes() && shouldCommentByVisibility(node.getModifiers())) {
-                String name = node.getName().getIdentifier();
-                String desc = generator.generateTypeComment(name, false, true, false);
-                addJavadocEdit(node, desc, List.of());
+        public boolean visit(final EnumDeclaration node) {
+            if (this.config.isCommentTypes() && this.shouldCommentByVisibility(node.getModifiers())) {
+                final String name = node.getName().getIdentifier();
+                final String desc = this.generator.generateTypeComment(name, false, true, false);
+                this.addJavadocEdit(node, desc, List.of());
             }
             return true;
         }
 
         @Override
-        public boolean visit(AnnotationTypeDeclaration node) {
-            if (config.isCommentTypes() && shouldCommentByVisibility(node.getModifiers())) {
-                String name = node.getName().getIdentifier();
-                String desc = generator.generateTypeComment(name, false, false, true);
-                addJavadocEdit(node, desc, List.of());
+        public boolean visit(final AnnotationTypeDeclaration node) {
+            if (this.config.isCommentTypes() && this.shouldCommentByVisibility(node.getModifiers())) {
+                final String name = node.getName().getIdentifier();
+                final String desc = this.generator.generateTypeComment(name, false, false, true);
+                this.addJavadocEdit(node, desc, List.of());
             }
             return true;
         }
 
         // ---- Field declarations ----
 
-        @SuppressWarnings("unchecked")
         @Override
-        public boolean visit(FieldDeclaration node) {
-            if (!config.isCommentFields() || !shouldCommentByVisibility(node.getModifiers())) {
+        public boolean visit(final FieldDeclaration node) {
+            if (!this.config.isCommentFields() || !this.shouldCommentByVisibility(node.getModifiers())
+                    || node.fragments().isEmpty()) {
                 return false;
             }
-            if (node.fragments().isEmpty()) {
-                return false;
-            }
-            VariableDeclarationFragment first = (VariableDeclarationFragment) node.fragments().get(0);
-            String fieldName = first.getName().getIdentifier();
-            String desc = generator.generateFieldComment(fieldName);
-            if (config.isAddTodoForAutodoc()) {
+            final VariableDeclarationFragment first = (VariableDeclarationFragment) node.fragments().get(0);
+            final String fieldName = first.getName().getIdentifier();
+            String desc = this.generator.generateFieldComment(fieldName);
+            if (this.config.isAddTodoForAutodoc()) {
                 desc = "TODO " + desc;
             }
-            addJavadocEdit(node, desc, List.of());
+            this.addJavadocEdit(node, desc, List.of());
             return false;
         }
 
         // ---- Method / constructor declarations ----
 
-        @SuppressWarnings("unchecked")
         @Override
-        public boolean visit(MethodDeclaration node) {
-            if (!config.isCommentMethods() || !shouldCommentByVisibility(node.getModifiers())) {
-                return false;
-            }
-
+        public boolean visit(final MethodDeclaration node) {
             // Skip methods that override/implement a parent or interface method
-            if (config.isExcludeOverrides() && hasOverrideAnnotation(node)) {
+            if (!this.config.isCommentMethods() || !this.shouldCommentByVisibility(node.getModifiers())
+                    || (this.config.isExcludeOverrides() && JavadocVisitor.hasOverrideAnnotation(node))) {
                 return false;
             }
 
-            String name = node.getName().getIdentifier();
-            int paramCount = node.parameters().size();
-            boolean isGetter = generator.isGetter(name, paramCount);
-            boolean isSetter = generator.isSetter(name, paramCount);
+            final String name = node.getName().getIdentifier();
+            final int paramCount = node.parameters().size();
+            final boolean isGetter = this.generator.isGetter(name, paramCount);
+            final boolean isSetter = this.generator.isSetter(name, paramCount);
 
             // Apply getter/setter filters
-            if (config.isGetterSetterOnly() && !isGetter && !isSetter && !node.isConstructor()) {
+            if (this.config.isGetterSetterOnly() && !isGetter && !isSetter && !node.isConstructor()) {
                 return false;
             }
-            if (config.isExcludeGetterSetter() && (isGetter || isSetter)) {
+            if (this.config.isExcludeGetterSetter() && (isGetter || isSetter)) {
                 return false;
             }
 
             // Build description
-            String desc = buildMethodDescription(node, name, isGetter, isSetter);
-            if (config.isAddTodoForAutodoc()) {
+            String desc = this.buildMethodDescription(node, name, isGetter, isSetter);
+            if (this.config.isAddTodoForAutodoc()) {
                 desc = "TODO " + desc;
             }
 
             // Build tag lines
-            List<String> tags = buildMethodTags(node, isGetter);
+            final List<String> tags = this.buildMethodTags(node, isGetter);
 
-            addJavadocEdit(node, desc, tags);
+            this.addJavadocEdit(node, desc, tags);
             return false;
         }
 
@@ -257,49 +249,52 @@ public final class JavaSourceProcessor {
         // Description builders
         // -------------------------------------------------------------------------
 
-        private String buildMethodDescription(MethodDeclaration node, String name, boolean isGetter, boolean isSetter) {
+        private String buildMethodDescription(final MethodDeclaration node, final String name, final boolean isGetter,
+                final boolean isSetter) {
             if (node.isConstructor()) {
-                ASTNode parent = node.getParent();
-                String className = (parent instanceof TypeDeclaration)
+                final ASTNode parent = node.getParent();
+                final String className = parent instanceof TypeDeclaration
                         ? ((TypeDeclaration) parent).getName().getIdentifier()
                         : name;
-                return generator.generateConstructorComment(className);
+                return this.generator.generateConstructorComment(className);
             }
             if (isGetter) {
-                return buildGetterDesc(name);
+                return this.buildGetterDesc(name);
             }
             if (isSetter) {
-                return buildSetterDesc(name);
+                return this.buildSetterDesc(name);
             }
-            return generator.generateMethodComment(name);
+            return this.generator.generateMethodComment(name);
         }
 
-        private String buildGetterDesc(String methodName) {
-            if (config.isGetterSetterFromField()) {
-                String fieldName = generator.getFieldFromGetter(methodName);
-                String fieldDoc = fieldName != null ? fieldJavadocMap.get(fieldName) : null;
+        private String buildGetterDesc(final String methodName) {
+            if (this.config.isGetterSetterFromField()) {
+                final String fieldName = this.generator.getFieldFromGetter(methodName);
+                final String fieldDoc = fieldName != null ? this.fieldJavadocMap.get(fieldName) : null;
                 if (fieldDoc != null) {
-                    String raw = extractMainDescFromJavadocText(fieldDoc, config.isGetterSetterFromFieldFirst());
-                    return "Gets the " + lcFirst(raw);
+                    final String raw = JavadocVisitor.extractMainDescFromJavadocText(fieldDoc,
+                            this.config.isGetterSetterFromFieldFirst());
+                    return "Gets the " + JavadocVisitor.lcFirst(raw);
                 }
             }
-            return generator.generateGetterComment(methodName);
+            return this.generator.generateGetterComment(methodName);
         }
 
-        private String buildSetterDesc(String methodName) {
-            if (config.isGetterSetterFromField()) {
-                String fieldName = generator.getFieldFromSetter(methodName);
-                String fieldDoc = fieldName != null ? fieldJavadocMap.get(fieldName) : null;
+        private String buildSetterDesc(final String methodName) {
+            if (this.config.isGetterSetterFromField()) {
+                final String fieldName = this.generator.getFieldFromSetter(methodName);
+                final String fieldDoc = fieldName != null ? this.fieldJavadocMap.get(fieldName) : null;
                 if (fieldDoc != null) {
-                    String raw = extractMainDescFromJavadocText(fieldDoc, config.isGetterSetterFromFieldFirst());
-                    return "Sets the " + lcFirst(raw);
+                    final String raw = JavadocVisitor.extractMainDescFromJavadocText(fieldDoc,
+                            this.config.isGetterSetterFromFieldFirst());
+                    return "Sets the " + JavadocVisitor.lcFirst(raw);
                 }
             }
-            return generator.generateSetterComment(methodName);
+            return this.generator.generateSetterComment(methodName);
         }
 
         /** Returns {@code s} with the first character lower-cased. */
-        private static String lcFirst(String s) {
+        private static String lcFirst(final String s) {
             if (s == null || s.isEmpty()) {
                 return s;
             }
@@ -310,12 +305,13 @@ public final class JavaSourceProcessor {
          * Extracts the main (non-tag) description from a raw Javadoc comment string. Strips the surrounding delimiters
          * and leading {@code *} characters from each line.
          */
-        private static String extractMainDescFromJavadocText(String javadocText, boolean firstSentenceOnly) {
+        private static String extractMainDescFromJavadocText(final String javadocText,
+                final boolean firstSentenceOnly) {
             // Strip /** ... */ delimiters
-            String stripped = javadocText.replaceAll("^/\\*+", "").replaceAll("\\*/$", "").trim();
-            String[] lines = stripped.split("\r?\n");
-            StringBuilder sb = new StringBuilder();
-            for (String line : lines) {
+            final String stripped = javadocText.replaceAll("^/\\*+", "").replaceAll("\\*/$", "").trim();
+            final String[] lines = stripped.split("\r?\n");
+            final StringBuilder sb = new StringBuilder();
+            for (final String line : lines) {
                 String trimmed = line.trim();
                 if (trimmed.startsWith("*")) {
                     trimmed = trimmed.substring(1).trim();
@@ -332,7 +328,7 @@ public final class JavaSourceProcessor {
             }
             String result = sb.length() > 0 ? sb.toString() : "field";
             if (firstSentenceOnly) {
-                int dot = result.indexOf('.');
+                final int dot = result.indexOf('.');
                 if (dot >= 0) {
                     result = result.substring(0, dot + 1);
                 }
@@ -344,45 +340,40 @@ public final class JavaSourceProcessor {
         // Tag builders
         // -------------------------------------------------------------------------
 
-        @SuppressWarnings("unchecked")
-        private List<String> buildMethodTags(MethodDeclaration node, boolean isGetter) {
-            List<String> tags = new ArrayList<>();
+        private List<String> buildMethodTags(final MethodDeclaration node, final boolean isGetter) {
+            final List<String> tags = new ArrayList<>();
 
             // @param
-            for (Object obj : node.parameters()) {
-                SingleVariableDeclaration param = (SingleVariableDeclaration) obj;
-                String pName = param.getName().getIdentifier();
-                tags.add("@param " + pName + " " + generator.generateParamComment(pName));
+            for (final Object obj : node.parameters()) {
+                final SingleVariableDeclaration param = (SingleVariableDeclaration) obj;
+                final String pName = param.getName().getIdentifier();
+                tags.add("@param " + pName + " " + this.generator.generateParamComment(pName));
             }
 
             // @return (non-void, non-constructor)
             if (!node.isConstructor() && node.getReturnType2() != null) {
-                String retType = node.getReturnType2().toString();
+                final String retType = node.getReturnType2().toString();
                 if (!"void".equals(retType)) {
                     String returnDesc;
-                    if (isGetter) {
-                        // Boolean getters use "true, if successful" unconditionally
-                        if ("boolean".equals(retType) || "Boolean".equals(retType)) {
-                            returnDesc = generator.generateReturnComment(retType);
-                        } else {
-                            // For other getters derive @return text from field name
-                            String methodName = node.getName().getIdentifier();
-                            String fieldName = generator.getFieldFromGetter(methodName);
-                            returnDesc = fieldName != null ? generator.generateParamComment(fieldName)
-                                    : generator.generateReturnComment(retType);
-                        }
+                    // Boolean getters use "true, if successful" unconditionally
+                    if (!isGetter || ("boolean".equals(retType) || "Boolean".equals(retType))) {
+                        returnDesc = this.generator.generateReturnComment(retType);
                     } else {
-                        returnDesc = generator.generateReturnComment(retType);
+                        // For other getters derive @return text from field name
+                        final String methodName = node.getName().getIdentifier();
+                        final String fieldName = this.generator.getFieldFromGetter(methodName);
+                        returnDesc = fieldName != null ? this.generator.generateParamComment(fieldName)
+                                : this.generator.generateReturnComment(retType);
                     }
                     tags.add("@return " + returnDesc);
                 }
             }
 
             // @throws
-            for (Object obj : node.thrownExceptionTypes()) {
-                Type exType = (Type) obj;
-                String exName = exType.toString();
-                tags.add("@throws " + exName + " " + generator.generateThrowsComment(exName));
+            for (final Object obj : node.thrownExceptionTypes()) {
+                final Type exType = (Type) obj;
+                final String exName = exType.toString();
+                tags.add("@throws " + exName + " " + this.generator.generateThrowsComment(exName));
             }
 
             return tags;
@@ -392,35 +383,36 @@ public final class JavaSourceProcessor {
         // Edit builders
         // -------------------------------------------------------------------------
 
-        private void addJavadocEdit(BodyDeclaration node, String description, List<String> tagLines) {
+        private void addJavadocEdit(final BodyDeclaration node, final String description, final List<String> tagLines) {
             // Optionally suppress description
-            String desc = config.isCreateDummyComment() ? description : "";
+            final String desc = this.config.isCreateDummyComment() ? description : "";
 
             // If nothing to write, skip
             if (desc.isEmpty() && tagLines.isEmpty()) {
                 return;
             }
 
-            boolean isField = node instanceof FieldDeclaration;
+            final boolean isField = node instanceof FieldDeclaration;
 
-            Javadoc existing = node.getJavadoc();
-            JautodocMode mode = config.getMode();
+            final Javadoc existing = node.getJavadoc();
+            final JautodocMode mode = this.config.getMode();
 
             if (existing != null) {
                 switch (mode) {
                     case KEEP:
                         return; // leave as-is
                     case REPLACE:
-                        if (!config.isGetterSetterFromField() || config.isGetterSetterFromFieldReplace()
-                                || (!isGetterOrSetter(node))) {
-                            int off = existing.getStartPosition();
-                            int len = existing.getLength();
-                            String indent = computeIndent(existing.getStartPosition());
-                            edits.add(new JavadocEdit(off, len, buildJavadocText(desc, tagLines, indent, isField)));
+                        if (!this.config.isGetterSetterFromField() || this.config.isGetterSetterFromFieldReplace()
+                                || !this.isGetterOrSetter(node)) {
+                            final int off = existing.getStartPosition();
+                            final int len = existing.getLength();
+                            final String indent = this.computeIndent(existing.getStartPosition());
+                            this.edits.add(
+                                    new JavadocEdit(off, len, this.buildJavadocText(desc, tagLines, indent, isField)));
                         }
                         return;
                     case COMPLETE:
-                        completeMissingTags(node, existing, tagLines);
+                        this.completeMissingTags(node, existing, tagLines);
                         return;
                     default:
                         return;
@@ -428,29 +420,28 @@ public final class JavaSourceProcessor {
             }
 
             // No existing Javadoc → insert new one
-            String indent = computeIndent(node.getStartPosition());
-            String javadocText = buildJavadocText(desc, tagLines, indent, isField);
-            int insertOffset = lineStartOffset(node.getStartPosition());
-            edits.add(new JavadocEdit(insertOffset, 0, javadocText + "\n"));
+            final String indent = this.computeIndent(node.getStartPosition());
+            final String javadocText = this.buildJavadocText(desc, tagLines, indent, isField);
+            final int insertOffset = this.lineStartOffset(node.getStartPosition());
+            this.edits.add(new JavadocEdit(insertOffset, 0, javadocText + "\n"));
         }
 
         /** Returns true when the body declaration is a getter or setter method. */
-        private boolean isGetterOrSetter(BodyDeclaration node) {
+        private boolean isGetterOrSetter(final BodyDeclaration node) {
             if (!(node instanceof MethodDeclaration)) {
                 return false;
             }
-            MethodDeclaration md = (MethodDeclaration) node;
-            String name = md.getName().getIdentifier();
-            int params = md.parameters().size();
-            return generator.isGetter(name, params) || generator.isSetter(name, params);
+            final MethodDeclaration md = (MethodDeclaration) node;
+            final String name = md.getName().getIdentifier();
+            final int params = md.parameters().size();
+            return this.generator.isGetter(name, params) || this.generator.isSetter(name, params);
         }
 
         /** Returns true when the method declaration has an {@code @Override} annotation. */
-        @SuppressWarnings("unchecked")
-        private static boolean hasOverrideAnnotation(MethodDeclaration node) {
-            for (Object mod : node.modifiers()) {
+        private static boolean hasOverrideAnnotation(final MethodDeclaration node) {
+            for (final Object mod : node.modifiers()) {
                 if (mod instanceof MarkerAnnotation) {
-                    String name = ((MarkerAnnotation) mod).getTypeName().getFullyQualifiedName();
+                    final String name = ((MarkerAnnotation) mod).getTypeName().getFullyQualifiedName();
                     if ("Override".equals(name) || "java.lang.Override".equals(name)) {
                         return true;
                     }
@@ -461,25 +452,25 @@ public final class JavaSourceProcessor {
 
         // ---- COMPLETE-mode tag completion ----
 
-        @SuppressWarnings("unchecked")
-        private void completeMissingTags(BodyDeclaration node, Javadoc existing, List<String> requiredTags) {
+        private void completeMissingTags(final BodyDeclaration node, final Javadoc existing,
+                final List<String> requiredTags) {
             if (requiredTags.isEmpty() || !(node instanceof MethodDeclaration)) {
                 return;
             }
 
             // Collect already-present tags
-            Set<String> presentParams = new HashSet<>();
-            Set<String> presentThrows = new HashSet<>();
+            final Set<String> presentParams = new HashSet<>();
+            final Set<String> presentThrows = new HashSet<>();
             boolean hasReturn = false;
 
-            for (Object obj : existing.tags()) {
-                TagElement tag = (TagElement) obj;
-                String tagName = tag.getTagName();
+            for (final Object obj : existing.tags()) {
+                final TagElement tag = (TagElement) obj;
+                final String tagName = tag.getTagName();
                 if (tagName == null) {
                     continue;
                 }
                 if ("@param".equals(tagName) && !tag.fragments().isEmpty()) {
-                    Object first = tag.fragments().get(0);
+                    final Object first = tag.fragments().get(0);
                     if (first instanceof SimpleName) {
                         presentParams.add(((SimpleName) first).getIdentifier());
                     }
@@ -493,17 +484,17 @@ public final class JavaSourceProcessor {
             }
 
             // Determine which required tags are missing
-            List<String> missing = new ArrayList<>();
-            for (String tagLine : requiredTags) {
+            final List<String> missing = new ArrayList<>();
+            for (final String tagLine : requiredTags) {
                 if (tagLine.startsWith("@param ")) {
-                    int spaceAt = tagLine.indexOf(' ', 7);
-                    String pName = spaceAt >= 0 ? tagLine.substring(7, spaceAt) : tagLine.substring(7);
+                    final int spaceAt = tagLine.indexOf(' ', 7);
+                    final String pName = spaceAt >= 0 ? tagLine.substring(7, spaceAt) : tagLine.substring(7);
                     if (!presentParams.contains(pName)) {
                         missing.add(tagLine);
                     }
                 } else if (tagLine.startsWith("@throws ")) {
-                    int spaceAt = tagLine.indexOf(' ', 8);
-                    String exName = spaceAt >= 0 ? tagLine.substring(8, spaceAt) : tagLine.substring(8);
+                    final int spaceAt = tagLine.indexOf(' ', 8);
+                    final String exName = spaceAt >= 0 ? tagLine.substring(8, spaceAt) : tagLine.substring(8);
                     if (!presentThrows.contains(exName)) {
                         missing.add(tagLine);
                     }
@@ -517,28 +508,29 @@ public final class JavaSourceProcessor {
             }
 
             // Insert missing tags just before the closing */
-            String indent = computeIndent(existing.getStartPosition());
-            int closePos = existing.getStartPosition() + existing.getLength() - 2; // points at '*' of '*/'
-            StringBuilder sb = new StringBuilder();
-            for (String line : missing) {
+            final String indent = this.computeIndent(existing.getStartPosition());
+            final int closePos = existing.getStartPosition() + existing.getLength() - 2; // points at '*' of '*/'
+            final StringBuilder sb = new StringBuilder();
+            for (final String line : missing) {
                 sb.append('\n').append(indent).append(" * ").append(line);
             }
             sb.append('\n').append(indent).append(' ');
-            edits.add(new JavadocEdit(closePos, 0, sb.toString()));
+            this.edits.add(new JavadocEdit(closePos, 0, sb.toString()));
         }
 
         // -------------------------------------------------------------------------
         // Formatting helpers
         // -------------------------------------------------------------------------
 
-        private String buildJavadocText(String description, List<String> tagLines, String indent, boolean isField) {
-            boolean hasDesc = !description.isEmpty();
+        private String buildJavadocText(final String description, final List<String> tagLines, final String indent,
+                final boolean isField) {
+            final boolean hasDesc = !description.isEmpty();
             // Single-line format is only used for fields (not types, methods, constructors)
-            if (isField && config.isSingleLineComment() && tagLines.isEmpty() && hasDesc) {
+            if (isField && this.config.isSingleLineComment() && tagLines.isEmpty() && hasDesc) {
                 return indent + "/** " + description + " */";
             }
 
-            StringBuilder sb = new StringBuilder();
+            final StringBuilder sb = new StringBuilder();
             sb.append(indent).append("/**\n");
             if (hasDesc) {
                 sb.append(indent).append(" * ").append(description).append('\n');
@@ -547,7 +539,7 @@ public final class JavaSourceProcessor {
                 if (hasDesc) {
                     sb.append(indent).append(" *\n");
                 }
-                for (String tag : tagLines) {
+                for (final String tag : tagLines) {
                     sb.append(indent).append(" * ").append(tag).append('\n');
                 }
             }
@@ -558,12 +550,12 @@ public final class JavaSourceProcessor {
         /**
          * Computes the whitespace-only indentation for the line that contains {@code sourceOffset}.
          */
-        private String computeIndent(int sourceOffset) {
-            int lineBegin = lineStartOffset(sourceOffset);
-            StringBuilder indent = new StringBuilder();
-            for (int i = lineBegin; i < sourceOffset && i < source.length()
-                    && Character.isWhitespace(source.charAt(i)); i++) {
-                indent.append(source.charAt(i));
+        private String computeIndent(final int sourceOffset) {
+            final int lineBegin = this.lineStartOffset(sourceOffset);
+            final StringBuilder indent = new StringBuilder();
+            for (int i = lineBegin; i < sourceOffset && i < this.source.length()
+                    && Character.isWhitespace(this.source.charAt(i)); i++) {
+                indent.append(this.source.charAt(i));
             }
             return indent.toString();
         }
@@ -571,9 +563,9 @@ public final class JavaSourceProcessor {
         /**
          * Returns the offset of the first character on the line that contains {@code pos}.
          */
-        private int lineStartOffset(int pos) {
+        private int lineStartOffset(final int pos) {
             int p = pos - 1;
-            while (p >= 0 && source.charAt(p) != '\n') {
+            while (p >= 0 && this.source.charAt(p) != '\n') {
                 p--;
             }
             return p + 1; // character after the '\n', or 0 if no '\n' found
@@ -581,17 +573,17 @@ public final class JavaSourceProcessor {
 
         // ---- Visibility filter ----
 
-        private boolean shouldCommentByVisibility(int modifiers) {
+        private boolean shouldCommentByVisibility(final int modifiers) {
             if (Modifier.isPublic(modifiers)) {
-                return config.isVisibilityPublic();
+                return this.config.isVisibilityPublic();
             }
             if (Modifier.isProtected(modifiers)) {
-                return config.isVisibilityProtected();
+                return this.config.isVisibilityProtected();
             }
             if (Modifier.isPrivate(modifiers)) {
-                return config.isVisibilityPrivate();
+                return this.config.isVisibilityPrivate();
             }
-            return config.isVisibilityPackage(); // package-private
+            return this.config.isVisibilityPackage(); // package-private
         }
     }
 }

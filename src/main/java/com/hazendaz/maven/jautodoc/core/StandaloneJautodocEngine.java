@@ -9,7 +9,6 @@ package com.hazendaz.maven.jautodoc.core;
 import com.hazendaz.maven.jautodoc.core.internal.HeaderProcessor;
 import com.hazendaz.maven.jautodoc.core.internal.JavaSourceProcessor;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,7 +44,7 @@ public final class StandaloneJautodocEngine {
      * @param config
      *            the config
      */
-    public StandaloneJautodocEngine(JautodocConfiguration config) {
+    public StandaloneJautodocEngine(final JautodocConfiguration config) {
         this.config = config;
     }
 
@@ -57,15 +56,15 @@ public final class StandaloneJautodocEngine {
      *
      * @return the jautodoc result
      */
-    public JautodocResult process(List<Path> files) {
+    public JautodocResult process(final List<Path> files) {
         int success = 0;
         int fail = 0;
         int skipped = 0;
         int readOnly = 0;
 
-        JavaSourceProcessor sourceProcessor = new JavaSourceProcessor(config);
+        final JavaSourceProcessor sourceProcessor = new JavaSourceProcessor(this.config);
 
-        for (Path file : files) {
+        for (final Path file : files) {
             if (!Files.exists(file)) {
                 fail++;
                 continue;
@@ -75,16 +74,14 @@ public final class StandaloneJautodocEngine {
                 continue;
             }
             try {
-                String original = Files.readString(file, StandardCharsets.UTF_8);
-                String result = processSource(original, sourceProcessor);
+                final String original = Files.readString(file, StandardCharsets.UTF_8);
+                final String result = this.processSource(original, sourceProcessor);
 
                 if (!result.equals(original)) {
                     Files.writeString(file, result, StandardCharsets.UTF_8);
                 }
                 success++;
-            } catch (IOException e) {
-                skipped++;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 skipped++;
             }
         }
@@ -100,44 +97,45 @@ public final class StandaloneJautodocEngine {
      *
      * @return the string
      */
-    public String processSource(String source) {
-        return processSource(source, new JavaSourceProcessor(config));
+    public String processSource(final String source) {
+        return this.processSource(source, new JavaSourceProcessor(this.config));
     }
 
     // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
 
-    private String processSource(String source, JavaSourceProcessor sourceProcessor) {
+    private String processSource(final String source, final JavaSourceProcessor sourceProcessor) {
         String result = source;
 
         // 1. Header
-        result = HeaderProcessor.process(result, config);
+        result = HeaderProcessor.process(result, this.config);
 
         // 2. Javadoc
         result = sourceProcessor.process(result);
 
         // 3. Eclipse formatter (optional)
-        if (config.isUseEclipseFormatter()) {
-            result = format(result);
+        if (this.config.isUseEclipseFormatter()) {
+            result = this.format(result);
         }
 
         return result;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private String format(String source) {
-        Map options = Map.of("org.eclipse.jdt.core.compiler.source", "21", "org.eclipse.jdt.core.compiler.compliance",
-                "21", "org.eclipse.jdt.core.compiler.codegen.targetPlatform", "21");
-        CodeFormatter formatter = ToolFactory.createCodeFormatter(options);
-        TextEdit edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT, source, 0, source.length(), 0, null);
+    @SuppressWarnings({ "rawtypes" })
+    private String format(final String source) {
+        final Map options = Map.of("org.eclipse.jdt.core.compiler.source", "21",
+                "org.eclipse.jdt.core.compiler.compliance", "21",
+                "org.eclipse.jdt.core.compiler.codegen.targetPlatform", "21");
+        final CodeFormatter formatter = ToolFactory.createCodeFormatter(options);
+        final TextEdit edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT, source, 0, source.length(), 0, null);
         if (edit == null) {
             return source;
         }
-        Document doc = new Document(source);
+        final Document doc = new Document(source);
         try {
             edit.apply(doc);
-        } catch (BadLocationException e) {
+        } catch (final BadLocationException e) {
             return source;
         }
         return doc.get();

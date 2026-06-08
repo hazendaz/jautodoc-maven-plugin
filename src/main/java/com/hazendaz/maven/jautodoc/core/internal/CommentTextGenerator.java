@@ -36,7 +36,8 @@ final class CommentTextGenerator {
      *
      * @return the string
      */
-    String generateTypeComment(String name, boolean isInterface, boolean isEnum, boolean isAnnotation) {
+    String generateTypeComment(final String name, final boolean isInterface, final boolean isEnum,
+            final boolean isAnnotation) {
         if (isInterface) {
             return "The Interface " + name + ".";
         }
@@ -61,8 +62,8 @@ final class CommentTextGenerator {
      *
      * @return the string
      */
-    String generateFieldComment(String fieldName) {
-        return "The " + splitCamelCaseLower(fieldName) + ".";
+    String generateFieldComment(final String fieldName) {
+        return "The " + this.splitCamelCaseLower(fieldName) + ".";
     }
 
     // -------------------------------------------------------------------------
@@ -77,8 +78,8 @@ final class CommentTextGenerator {
      *
      * @return the string
      */
-    String generateConstructorComment(String className) {
-        return "Instantiates a new " + splitCamelCaseLower(className) + ".";
+    String generateConstructorComment(final String className) {
+        return "Instantiates a new " + this.splitCamelCaseLower(className) + ".";
     }
 
     /**
@@ -91,13 +92,13 @@ final class CommentTextGenerator {
      *
      * @return true, if is getter
      */
-    boolean isGetter(String methodName, int paramCount) {
+    boolean isGetter(final String methodName, final int paramCount) {
         if (paramCount != 0) {
             return false;
         }
-        return (methodName.startsWith("get") && methodName.length() > 3 && Character.isUpperCase(methodName.charAt(3)))
-                || (methodName.startsWith("is") && methodName.length() > 2
-                        && Character.isUpperCase(methodName.charAt(2)));
+        return methodName.startsWith("get") && methodName.length() > 3 && Character.isUpperCase(methodName.charAt(3))
+                || methodName.startsWith("is") && methodName.length() > 2
+                        && Character.isUpperCase(methodName.charAt(2));
     }
 
     /**
@@ -110,7 +111,7 @@ final class CommentTextGenerator {
      *
      * @return true, if is setter
      */
-    boolean isSetter(String methodName, int paramCount) {
+    boolean isSetter(final String methodName, final int paramCount) {
         return paramCount == 1 && methodName.startsWith("set") && methodName.length() > 3
                 && Character.isUpperCase(methodName.charAt(3));
     }
@@ -123,7 +124,7 @@ final class CommentTextGenerator {
      *
      * @return the field from getter
      */
-    String getFieldFromGetter(String methodName) {
+    String getFieldFromGetter(final String methodName) {
         if (methodName.startsWith("get") && methodName.length() > 3) {
             return Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
         }
@@ -141,7 +142,7 @@ final class CommentTextGenerator {
      *
      * @return the field from setter
      */
-    String getFieldFromSetter(String methodName) {
+    String getFieldFromSetter(final String methodName) {
         if (methodName.startsWith("set") && methodName.length() > 3) {
             return Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
         }
@@ -156,14 +157,15 @@ final class CommentTextGenerator {
      *
      * @return the string
      */
-    String generateGetterComment(String methodName) {
+    String generateGetterComment(final String methodName) {
         if (methodName.startsWith("is")) {
-            String field = getFieldFromGetter(methodName);
-            String target = field != null ? splitCamelCaseLower(field) : splitCamelCaseLower(methodName);
+            final String field = this.getFieldFromGetter(methodName);
+            final String target = field != null ? this.splitCamelCaseLower(field)
+                    : this.splitCamelCaseLower(methodName);
             return "Checks if is " + target + ".";
         }
-        String field = getFieldFromGetter(methodName);
-        String target = field != null ? splitCamelCaseLower(field) : splitCamelCaseLower(methodName);
+        final String field = this.getFieldFromGetter(methodName);
+        final String target = field != null ? this.splitCamelCaseLower(field) : this.splitCamelCaseLower(methodName);
         return "Gets the " + target + ".";
     }
 
@@ -175,9 +177,9 @@ final class CommentTextGenerator {
      *
      * @return the string
      */
-    String generateSetterComment(String methodName) {
-        String field = getFieldFromSetter(methodName);
-        String target = field != null ? splitCamelCaseLower(field) : splitCamelCaseLower(methodName);
+    String generateSetterComment(final String methodName) {
+        final String field = this.getFieldFromSetter(methodName);
+        final String target = field != null ? this.splitCamelCaseLower(field) : this.splitCamelCaseLower(methodName);
         return "Sets the " + target + ".";
     }
 
@@ -189,8 +191,8 @@ final class CommentTextGenerator {
      *
      * @return the string
      */
-    String generateMethodComment(String methodName) {
-        return capitalize(splitCamelCaseLower(methodName)) + ".";
+    String generateMethodComment(final String methodName) {
+        return this.capitalize(this.splitCamelCaseLower(methodName)) + ".";
     }
 
     // -------------------------------------------------------------------------
@@ -205,8 +207,8 @@ final class CommentTextGenerator {
      *
      * @return the string
      */
-    String generateParamComment(String paramName) {
-        return "the " + splitCamelCaseLower(paramName);
+    String generateParamComment(final String paramName) {
+        return "the " + this.splitCamelCaseLower(paramName);
     }
 
     /**
@@ -217,15 +219,15 @@ final class CommentTextGenerator {
      *
      * @return the string
      */
-    String generateReturnComment(String returnTypeName) {
+    String generateReturnComment(final String returnTypeName) {
         // Special-case booleans to match JAutodoc Eclipse plugin output
         if ("boolean".equals(returnTypeName) || "Boolean".equals(returnTypeName)) {
             return "true, if successful";
         }
         // Strip generic parameters for the description, e.g. "List<String>" -> "list"
-        String baseType = returnTypeName.contains("<") ? returnTypeName.substring(0, returnTypeName.indexOf('<'))
+        final String baseType = returnTypeName.contains("<") ? returnTypeName.substring(0, returnTypeName.indexOf('<'))
                 : returnTypeName;
-        return "the " + splitCamelCaseLower(baseType);
+        return "the " + this.splitCamelCaseLower(baseType);
     }
 
     /**
@@ -236,11 +238,11 @@ final class CommentTextGenerator {
      *
      * @return the string
      */
-    String generateThrowsComment(String exceptionName) {
+    String generateThrowsComment(final String exceptionName) {
         // Strip package prefix if present
-        String simple = exceptionName.contains(".") ? exceptionName.substring(exceptionName.lastIndexOf('.') + 1)
+        final String simple = exceptionName.contains(".") ? exceptionName.substring(exceptionName.lastIndexOf('.') + 1)
                 : exceptionName;
-        return "the " + splitCamelCaseLower(simple);
+        return "the " + this.splitCamelCaseLower(simple);
     }
 
     // -------------------------------------------------------------------------
@@ -255,12 +257,12 @@ final class CommentTextGenerator {
      *
      * @return the string
      */
-    String splitCamelCaseLower(String name) {
-        List<String> words = splitWords(name);
+    String splitCamelCaseLower(final String name) {
+        final List<String> words = this.splitWords(name);
         if (words.isEmpty()) {
             return name != null ? name : "";
         }
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < words.size(); i++) {
             if (i > 0) {
                 sb.append(' ');
@@ -270,7 +272,7 @@ final class CommentTextGenerator {
         return sb.toString();
     }
 
-    private String capitalize(String s) {
+    private String capitalize(final String s) {
         if (s == null || s.isEmpty()) {
             return s;
         }
@@ -287,8 +289,8 @@ final class CommentTextGenerator {
      * <li>{@code _privateVar} → [private, Var]
      * </ul>
      */
-    private List<String> splitWords(String name) {
-        List<String> words = new ArrayList<>();
+    private List<String> splitWords(final String name) {
+        final List<String> words = new ArrayList<>();
         if (name == null || name.isEmpty()) {
             return words;
         }
@@ -305,7 +307,7 @@ final class CommentTextGenerator {
 
         StringBuilder word = new StringBuilder();
         for (int i = start; i < name.length(); i++) {
-            char c = name.charAt(i);
+            final char c = name.charAt(i);
 
             // Underscore or dollar sign is a word separator
             if (c == '_' || c == '$') {
@@ -317,13 +319,10 @@ final class CommentTextGenerator {
             }
 
             if (Character.isUpperCase(c) && word.length() > 0) {
-                char prev = word.charAt(word.length() - 1);
-                if (!Character.isUpperCase(prev)) {
+                final char prev = word.charAt(word.length() - 1);
+                if (!Character.isUpperCase(prev)
+                        || (i + 1 < name.length() && Character.isLowerCase(name.charAt(i + 1)))) {
                     // lowerToUpper transition: "myFoo" -> split before F
-                    words.add(word.toString());
-                    word = new StringBuilder();
-                } else if (i + 1 < name.length() && Character.isLowerCase(name.charAt(i + 1))) {
-                    // uppercase run followed by lower: "XMLParser" -> split between L and P
                     words.add(word.toString());
                     word = new StringBuilder();
                 }

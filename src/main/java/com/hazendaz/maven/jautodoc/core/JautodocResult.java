@@ -35,7 +35,8 @@ public final class JautodocResult {
      * @param readOnlyCount
      *            the read only count
      */
-    public JautodocResult(int successCount, int failCount, int skippedCount, int readOnlyCount) {
+    public JautodocResult(final int successCount, final int failCount, final int skippedCount,
+            final int readOnlyCount) {
         this.successCount = successCount;
         this.failCount = failCount;
         this.skippedCount = skippedCount;
@@ -48,7 +49,7 @@ public final class JautodocResult {
      * @return the success count
      */
     public int getSuccessCount() {
-        return successCount;
+        return this.successCount;
     }
 
     /**
@@ -57,7 +58,7 @@ public final class JautodocResult {
      * @return the fail count
      */
     public int getFailCount() {
-        return failCount;
+        return this.failCount;
     }
 
     /**
@@ -66,7 +67,7 @@ public final class JautodocResult {
      * @return the skipped count
      */
     public int getSkippedCount() {
-        return skippedCount;
+        return this.skippedCount;
     }
 
     /**
@@ -75,6 +76,6 @@ public final class JautodocResult {
      * @return the read only count
      */
     public int getReadOnlyCount() {
-        return readOnlyCount;
+        return this.readOnlyCount;
     }
 }
