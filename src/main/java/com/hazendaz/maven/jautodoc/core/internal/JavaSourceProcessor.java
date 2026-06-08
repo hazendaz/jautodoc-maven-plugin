@@ -299,9 +299,7 @@ public final class JavaSourceProcessor {
                 final boolean isSetter) {
             if (node.isConstructor()) {
                 final var parent = node.getParent();
-                final var className = parent instanceof TypeDeclaration
-                        ? ((TypeDeclaration) parent).getName().getIdentifier()
-                        : name;
+                final var className = parent instanceof final TypeDeclaration t ? t.getName().getIdentifier() : name;
                 return this.generator.generateConstructorComment(className);
             }
             if (isGetter) {
@@ -531,10 +529,9 @@ public final class JavaSourceProcessor {
          * @return true, if successful
          */
         private boolean isGetterOrSetter(final BodyDeclaration node) {
-            if (!(node instanceof MethodDeclaration)) {
+            if (!(node instanceof final MethodDeclaration md)) {
                 return false;
             }
-            final var md = (MethodDeclaration) node;
             final var name = md.getName().getIdentifier();
             final var params = md.parameters().size();
             return this.generator.isGetter(name, params) || this.generator.isSetter(name, params);
