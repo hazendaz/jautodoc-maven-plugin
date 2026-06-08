@@ -383,7 +383,7 @@ public final class JavaSourceProcessor {
                 final boolean firstSentenceOnly) {
             // Strip /** ... */ delimiters
             final var stripped = javadocText.replaceAll("^/\\*+", "").replaceAll("\\*/$", "").trim();
-            final var lines = stripped.split("\r?\n");
+            final var lines = stripped.split("\r?\n", -1);
             final var sb = new StringBuilder();
             for (final String line : lines) {
                 var trimmed = line.trim();
