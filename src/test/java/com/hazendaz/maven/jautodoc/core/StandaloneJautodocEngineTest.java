@@ -306,8 +306,13 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void getterSetterOnly_skipsRegularMethods() {
-        final var source = "package p;\npublic class C {\n" + "    public String getFoo() { return null; }\n"
-                + "    public void doWork() {}\n" + "}\n";
+        final var source = """
+                        package p;
+                public class C {
+                    public String getFoo() { return null; }
+                    public void doWork() {}
+                }
+                """;
         final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setGetterSetterOnly(true);
 
@@ -323,8 +328,13 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void excludeGetterSetter_skipsGettersAndSetters() {
-        final var source = "package p;\npublic class C {\n" + "    public String getFoo() { return null; }\n"
-                + "    public void doWork() {}\n" + "}\n";
+        final var source = """
+                        package p;
+                public class C {
+                    public String getFoo() { return null; }
+                    public void doWork() {}
+                }
+                """;
         final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setExcludeGetterSetter(true);
 
@@ -385,8 +395,15 @@ public class StandaloneJautodocEngineTest {
     @Test
     void completeMode_addsMissingParamToExistingJavadoc() {
         // Existing Javadoc has no @param
-        final var source = "package p;\npublic class E {\n" + "    /**\n" + "     * Does work.\n" + "     */\n"
-                + "    public void doWork(String task) {}\n" + "}\n";
+        final var source = """
+                        package p;
+                public class E {
+                    /**
+                     * Does work.
+                     */
+                    public void doWork(String task) {}
+                }
+                """;
         final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setMode(JautodocMode.COMPLETE);
 
@@ -405,8 +422,14 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void excludeOverrides_skipsOverriddenMethods() {
-        final var source = "package p;\npublic class C {\n" + "    @Override\n"
-                + "    public String toString() { return \"\"; }\n" + "    public void doWork() {}\n" + "}\n";
+        final var source = """
+                        package p;
+                public class C {
+                    @Override
+                    public String toString() { return ""; }
+                    public void doWork() {}
+                }
+                """;
         final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setExcludeOverrides(true);
 
@@ -422,8 +445,13 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void excludeOverrides_false_commentsOverriddenMethods() {
-        final var source = "package p;\npublic class C {\n" + "    @Override\n"
-                + "    public String toString() { return \"\"; }\n" + "}\n";
+        final var source = """
+                        package p;
+                public class C {
+                    @Override
+                    public String toString() { return ""; }
+                }
+                """;
         final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setExcludeOverrides(false);
 
