@@ -41,15 +41,11 @@ public enum JautodocMode {
         if (mode == null || mode.isBlank()) {
             return COMPLETE;
         }
-        switch (mode.trim().toLowerCase(Locale.ROOT)) {
-            case "complete":
-                return COMPLETE;
-            case "keep":
-                return KEEP;
-            case "replace":
-                return REPLACE;
-            default:
-                return COMPLETE;
-        }
+        return switch (mode.trim().toLowerCase(Locale.ROOT)) {
+            case "complete" -> COMPLETE;
+            case "keep" -> KEEP;
+            case "replace" -> REPLACE;
+            default -> COMPLETE;
+        };
     }
 }

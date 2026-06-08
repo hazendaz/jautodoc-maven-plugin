@@ -7,7 +7,6 @@
 package com.hazendaz.maven.jautodoc.core;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,7 +35,7 @@ public class StandaloneJautodocEngineTest {
      * @return the jautodoc configuration
      */
     private static JautodocConfiguration defaults() {
-        final JautodocConfiguration c = new JautodocConfiguration();
+        final var c = new JautodocConfiguration();
         c.setMode(JautodocMode.COMPLETE);
         c.setVisibilityPublic(true);
         c.setVisibilityPackage(true);
@@ -63,11 +62,11 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void completeMode_simpleClass_matchesGolden() throws IOException {
-        final String input = StandaloneJautodocEngineTest.fixture("simple-class/input.java");
-        final String expected = StandaloneJautodocEngineTest.fixture("simple-class/expected-complete.java");
+        final var input = StandaloneJautodocEngineTest.fixture("simple-class/input.java");
+        final var expected = StandaloneJautodocEngineTest.fixture("simple-class/expected-complete.java");
 
-        final StandaloneJautodocEngine engine = new StandaloneJautodocEngine(StandaloneJautodocEngineTest.defaults());
-        final String actual = engine.processSource(input);
+        final var engine = new StandaloneJautodocEngine(StandaloneJautodocEngineTest.defaults());
+        final var actual = engine.processSource(input);
 
         Assertions.assertEquals(StandaloneJautodocEngineTest.normalise(expected),
                 StandaloneJautodocEngineTest.normalise(actual),
@@ -83,12 +82,12 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void keepMode_existingJavadocIsUntouched() {
-        final String source = "package p;\n/** My doc. */\npublic class Foo {}\n";
+        final var source = "package p;\n/** My doc. */\npublic class Foo {}\n";
 
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setMode(JautodocMode.KEEP);
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertTrue(result.contains("/** My doc. */"), "KEEP mode must not alter existing Javadoc");
     }
@@ -98,12 +97,12 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void keepMode_addsMissingJavadoc() {
-        final String source = "package p;\npublic class Bar {}\n";
+        final var source = "package p;\npublic class Bar {}\n";
 
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setMode(JautodocMode.KEEP);
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertTrue(result.contains("The Class Bar"), "KEEP mode must add Javadoc where absent");
     }
@@ -117,12 +116,12 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void replaceMode_replacesExistingJavadoc() {
-        final String source = "package p;\n/** Old comment. */\npublic class Baz {}\n";
+        final var source = "package p;\n/** Old comment. */\npublic class Baz {}\n";
 
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setMode(JautodocMode.REPLACE);
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertFalse(result.contains("Old comment"), "REPLACE mode must remove the old comment");
         Assertions.assertTrue(result.contains("The Class Baz"), "REPLACE mode must insert a new comment");
@@ -140,11 +139,11 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void visibility_publicAndPackage_matchesGolden() throws IOException {
-        final String input = StandaloneJautodocEngineTest.fixture("visibility/input.java");
-        final String expected = StandaloneJautodocEngineTest.fixture("visibility/expected-public-package.java");
+        final var input = StandaloneJautodocEngineTest.fixture("visibility/input.java");
+        final var expected = StandaloneJautodocEngineTest.fixture("visibility/expected-public-package.java");
 
-        final StandaloneJautodocEngine engine = new StandaloneJautodocEngine(StandaloneJautodocEngineTest.defaults());
-        final String actual = engine.processSource(input);
+        final var engine = new StandaloneJautodocEngine(StandaloneJautodocEngineTest.defaults());
+        final var actual = engine.processSource(input);
 
         Assertions.assertEquals(StandaloneJautodocEngineTest.normalise(expected),
                 StandaloneJautodocEngineTest.normalise(actual),
@@ -156,12 +155,12 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void visibility_privateField_commentedWhenEnabled() {
-        final String source = "package p;\npublic class C {\n    private int x;\n}\n";
+        final var source = "package p;\npublic class C {\n    private int x;\n}\n";
 
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setVisibilityPrivate(true);
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertTrue(result.contains("/** The x. */"),
                 "Private field should be commented when visibilityPrivate=true");
@@ -172,10 +171,9 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void visibility_privateField_notCommentedByDefault() {
-        final String source = "package p;\npublic class C {\n    private int x;\n}\n";
+        final var source = "package p;\npublic class C {\n    private int x;\n}\n";
 
-        final String result = new StandaloneJautodocEngine(StandaloneJautodocEngineTest.defaults())
-                .processSource(source);
+        final var result = new StandaloneJautodocEngine(StandaloneJautodocEngineTest.defaults()).processSource(source);
 
         Assertions.assertFalse(result.contains("/** X. */"),
                 "Private field must not be commented when visibilityPrivate=false");
@@ -193,14 +191,14 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void header_insertedWhenAbsent() throws IOException {
-        final String input = StandaloneJautodocEngineTest.fixture("header/input.java");
-        final String expected = StandaloneJautodocEngineTest.fixture("header/expected.java");
+        final var input = StandaloneJautodocEngineTest.fixture("header/input.java");
+        final var expected = StandaloneJautodocEngineTest.fixture("header/expected.java");
 
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setAddHeader(true);
         cfg.setHeaderText("Copyright 2025 Example Corp.");
 
-        final String actual = new StandaloneJautodocEngine(cfg).processSource(input);
+        final var actual = new StandaloneJautodocEngine(cfg).processSource(input);
 
         Assertions.assertEquals(StandaloneJautodocEngineTest.normalise(expected),
                 StandaloneJautodocEngineTest.normalise(actual), "Header must be inserted when absent");
@@ -211,12 +209,12 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void header_notInsertedWhenAddHeaderFalse() {
-        final String source = "package p;\npublic class X {}\n";
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var source = "package p;\npublic class X {}\n";
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setAddHeader(false);
         cfg.setHeaderText("Some header");
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertFalse(result.startsWith("/*"), "Header must not be inserted when addHeader=false");
     }
@@ -226,13 +224,13 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void header_keptWhenReplaceHeaderFalse() {
-        final String source = "/* Original header */\npackage p;\npublic class X {}\n";
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var source = "/* Original header */\npackage p;\npublic class X {}\n";
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setAddHeader(true);
         cfg.setReplaceHeader(false);
         cfg.setHeaderText("New header");
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertTrue(result.contains("Original header"),
                 "Original header must be preserved when replaceHeader=false");
@@ -245,13 +243,13 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void header_replacedWhenReplaceHeaderTrue() {
-        final String source = "/* Original header */\npackage p;\npublic class X {}\n";
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var source = "/* Original header */\npackage p;\npublic class X {}\n";
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setAddHeader(true);
         cfg.setReplaceHeader(true);
         cfg.setHeaderText("New header");
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertFalse(result.contains("Original header"),
                 "Original header must be removed when replaceHeader=true");
@@ -267,13 +265,13 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void headerOnly_noJavadocAdded() {
-        final String source = "package p;\npublic class Y {}\n";
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var source = "package p;\npublic class Y {}\n";
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setAddHeader(true);
         cfg.setHeaderText("Header only");
         cfg.setHeaderOnly(true);
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertTrue(result.contains("Header only"), "Header must be inserted in header-only mode");
         Assertions.assertFalse(result.contains("The Class Y"), "No Javadoc should be generated in header-only mode");
@@ -291,13 +289,13 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void getterSetter_matchesGolden() throws IOException {
-        final String input = StandaloneJautodocEngineTest.fixture("getter-setter/input.java");
-        final String expected = StandaloneJautodocEngineTest.fixture("getter-setter/expected.java");
+        final var input = StandaloneJautodocEngineTest.fixture("getter-setter/input.java");
+        final var expected = StandaloneJautodocEngineTest.fixture("getter-setter/expected.java");
 
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setVisibilityPrivate(false); // the private field already has javadoc; don't touch
 
-        final String actual = new StandaloneJautodocEngine(cfg).processSource(input);
+        final var actual = new StandaloneJautodocEngine(cfg).processSource(input);
 
         Assertions.assertEquals(StandaloneJautodocEngineTest.normalise(expected),
                 StandaloneJautodocEngineTest.normalise(actual), "Getter/setter output must match golden");
@@ -308,12 +306,12 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void getterSetterOnly_skipsRegularMethods() {
-        final String source = "package p;\npublic class C {\n" + "    public String getFoo() { return null; }\n"
+        final var source = "package p;\npublic class C {\n" + "    public String getFoo() { return null; }\n"
                 + "    public void doWork() {}\n" + "}\n";
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setGetterSetterOnly(true);
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertTrue(result.contains("Gets the foo"), "Getter must be commented with getterSetterOnly=true");
         Assertions.assertFalse(result.contains("Do work"),
@@ -325,12 +323,12 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void excludeGetterSetter_skipsGettersAndSetters() {
-        final String source = "package p;\npublic class C {\n" + "    public String getFoo() { return null; }\n"
+        final var source = "package p;\npublic class C {\n" + "    public String getFoo() { return null; }\n"
                 + "    public void doWork() {}\n" + "}\n";
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setExcludeGetterSetter(true);
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertFalse(result.contains("Gets the foo"),
                 "Getter must not be commented when excludeGetterSetter=true");
@@ -348,11 +346,11 @@ public class StandaloneJautodocEngineTest {
     @Test
     void createDummyComment_false_skipsDescriptionForMembersWithNoTags() {
         // A method with no params, void return, no throws → would produce empty Javadoc → should be skipped
-        final String source = "package p;\npublic class C {\n    public void doWork() {}\n}\n";
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var source = "package p;\npublic class C {\n    public void doWork() {}\n}\n";
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setCreateDummyComment(false);
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         // With createDummyComment=false and no tags, no Javadoc should be written for doWork()
         Assertions.assertFalse(result.contains("/**"),
@@ -368,11 +366,11 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void addTodoForAutodoc_prefixesTodo() {
-        final String source = "package p;\npublic class D {\n    public int getValue() { return 0; }\n}\n";
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var source = "package p;\npublic class D {\n    public int getValue() { return 0; }\n}\n";
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setAddTodoForAutodoc(true);
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertTrue(result.contains("TODO"), "Comment must contain TODO when addTodoForAutodoc=true");
     }
@@ -387,12 +385,12 @@ public class StandaloneJautodocEngineTest {
     @Test
     void completeMode_addsMissingParamToExistingJavadoc() {
         // Existing Javadoc has no @param
-        final String source = "package p;\npublic class E {\n" + "    /**\n" + "     * Does work.\n" + "     */\n"
+        final var source = "package p;\npublic class E {\n" + "    /**\n" + "     * Does work.\n" + "     */\n"
                 + "    public void doWork(String task) {}\n" + "}\n";
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setMode(JautodocMode.COMPLETE);
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertTrue(result.contains("@param task"),
                 "COMPLETE mode must add missing @param to existing Javadoc");
@@ -407,12 +405,12 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void excludeOverrides_skipsOverriddenMethods() {
-        final String source = "package p;\npublic class C {\n" + "    @Override\n"
+        final var source = "package p;\npublic class C {\n" + "    @Override\n"
                 + "    public String toString() { return \"\"; }\n" + "    public void doWork() {}\n" + "}\n";
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setExcludeOverrides(true);
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertFalse(result.contains("To string"),
                 "@Override method must not be commented when excludeOverrides=true");
@@ -424,12 +422,12 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void excludeOverrides_false_commentsOverriddenMethods() {
-        final String source = "package p;\npublic class C {\n" + "    @Override\n"
+        final var source = "package p;\npublic class C {\n" + "    @Override\n"
                 + "    public String toString() { return \"\"; }\n" + "}\n";
-        final JautodocConfiguration cfg = StandaloneJautodocEngineTest.defaults();
+        final var cfg = StandaloneJautodocEngineTest.defaults();
         cfg.setExcludeOverrides(false);
 
-        final String result = new StandaloneJautodocEngine(cfg).processSource(source);
+        final var result = new StandaloneJautodocEngine(cfg).processSource(source);
 
         Assertions.assertTrue(result.contains("To string"),
                 "@Override method must be commented when excludeOverrides=false");
@@ -447,13 +445,13 @@ public class StandaloneJautodocEngineTest {
      */
     @Test
     void resultCounters_successAndMissing() throws IOException {
-        final Path existing = this.tempDir.resolve("Exists.java");
+        final var existing = this.tempDir.resolve("Exists.java");
         Files.writeString(existing, "package p;\npublic class Exists {}\n", StandardCharsets.UTF_8);
 
-        final Path missing = this.tempDir.resolve("Missing.java");
+        final var missing = this.tempDir.resolve("Missing.java");
         // intentionally not created
 
-        final JautodocResult result = new StandaloneJautodocEngine(StandaloneJautodocEngineTest.defaults())
+        final var result = new StandaloneJautodocEngine(StandaloneJautodocEngineTest.defaults())
                 .process(java.util.List.of(existing, missing));
 
         Assertions.assertEquals(1, result.getSuccessCount(), "One file should succeed");
@@ -508,8 +506,8 @@ public class StandaloneJautodocEngineTest {
      *             the io exception
      */
     private static String fixture(final String relativePath) throws IOException {
-        final String resourcePath = "/fixtures/" + relativePath;
-        try (InputStream is = StandaloneJautodocEngineTest.class.getResourceAsStream(resourcePath)) {
+        final var resourcePath = "/fixtures/" + relativePath;
+        try (var is = StandaloneJautodocEngineTest.class.getResourceAsStream(resourcePath)) {
             Assertions.assertNotNull(is, "Fixture not found: " + resourcePath);
             return new String(is.readAllBytes(), StandardCharsets.UTF_8);
         }

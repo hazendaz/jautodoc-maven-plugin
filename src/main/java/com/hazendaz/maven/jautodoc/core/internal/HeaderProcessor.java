@@ -43,17 +43,17 @@ public final class HeaderProcessor {
             return source;
         }
 
-        final String newHeader = HeaderProcessor.buildHeaderComment(config);
-        final int existingEnd = HeaderProcessor.findExistingHeaderEnd(source);
+        final var newHeader = HeaderProcessor.buildHeaderComment(config);
+        final var existingEnd = HeaderProcessor.findExistingHeaderEnd(source);
 
         if (existingEnd >= 0) {
             if (!config.isReplaceHeader()) {
                 return source; // keep existing header
             }
             // Replace existing header, stripping any leading blank lines between it and the rest
-            final String remainder = source.substring(existingEnd);
+            final var remainder = source.substring(existingEnd);
             // Strip only the immediately following newline(s) so we can re-add one
-            int skip = 0;
+            var skip = 0;
             if (skip < remainder.length() && remainder.charAt(skip) == '\n'
                     || skip < remainder.length() && remainder.charAt(skip) == '\r') {
                 if (remainder.charAt(skip) == '\r' && skip + 1 < remainder.length()
@@ -87,15 +87,15 @@ public final class HeaderProcessor {
      * @return the character offset after the closing delimiter, or -1
      */
     static int findExistingHeaderEnd(final String source) {
-        int pos = 0;
+        var pos = 0;
         // Skip leading whitespace
         while (pos < source.length() && Character.isWhitespace(source.charAt(pos))) {
             pos++;
         }
-        if ((pos + 1 >= source.length()) || source.charAt(pos) != '/' || source.charAt(pos + 1) != '*') {
+        if (pos + 1 >= source.length() || source.charAt(pos) != '/' || source.charAt(pos + 1) != '*') {
             return -1; // file doesn't start with a block comment
         }
-        final int closeIdx = source.indexOf("*/", pos + 2);
+        final var closeIdx = source.indexOf("*/", pos + 2);
         if (closeIdx < 0) {
             return -1;
         }
@@ -115,9 +115,9 @@ public final class HeaderProcessor {
      * @return the string
      */
     private static String buildHeaderComment(final JautodocConfiguration config) {
-        final String text = config.getHeaderText().trim();
-        final String open = config.isMultiCommentHeader() ? "/**" : "/*";
-        final StringBuilder sb = new StringBuilder(open).append('\n');
+        final var text = config.getHeaderText().trim();
+        final var open = config.isMultiCommentHeader() ? "/**" : "/*";
+        final var sb = new StringBuilder(open).append('\n');
         for (final String line : text.split("\r?\n", -1)) {
             if (line.isEmpty()) {
                 sb.append(" *\n");

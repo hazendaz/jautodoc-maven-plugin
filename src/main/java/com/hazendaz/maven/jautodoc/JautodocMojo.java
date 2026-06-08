@@ -8,7 +8,6 @@ package com.hazendaz.maven.jautodoc;
 
 import com.hazendaz.maven.jautodoc.core.JautodocConfiguration;
 import com.hazendaz.maven.jautodoc.core.JautodocMode;
-import com.hazendaz.maven.jautodoc.core.JautodocResult;
 import com.hazendaz.maven.jautodoc.core.StandaloneJautodocEngine;
 
 import java.io.File;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -145,25 +143,25 @@ public class JautodocMojo extends AbstractMojo {
             return;
         }
 
-        final long startClock = System.currentTimeMillis();
+        final var startClock = System.currentTimeMillis();
 
         final List<File> files = new ArrayList<>();
         if (this.basedir != null && this.basedir.exists() && this.basedir.isDirectory()) {
             files.addAll(this.addCollectionFiles(this.basedir));
         }
 
-        final int numberOfFiles = files.size();
-        final Log log = this.getLog();
+        final var numberOfFiles = files.size();
+        final var log = this.getLog();
         log.info("Number of files to be jautodoc'd: " + numberOfFiles);
 
         if (numberOfFiles > 0) {
             try {
-                final JautodocConfiguration configuration = this.loadConfiguration();
-                final StandaloneJautodocEngine engine = new StandaloneJautodocEngine(configuration);
-                final JautodocResult rc = engine.process(files.stream().map(File::toPath).collect(Collectors.toList()));
+                final var configuration = this.loadConfiguration();
+                final var engine = new StandaloneJautodocEngine(configuration);
+                final var rc = engine.process(files.stream().map(File::toPath).collect(Collectors.toList()));
 
                 // Finish processing
-                final long endClock = System.currentTimeMillis();
+                final var endClock = System.currentTimeMillis();
 
                 log.info("Successfully formatted: " + rc.getSuccessCount() + JautodocMojo.FILE_S);
                 log.info("Fail to format:         " + rc.getFailCount() + JautodocMojo.FILE_S);
@@ -183,7 +181,7 @@ public class JautodocMojo extends AbstractMojo {
      * @return the configuration
      */
     private JautodocConfiguration loadConfiguration() {
-        final JautodocConfiguration configuration = new JautodocConfiguration();
+        final var configuration = new JautodocConfiguration();
         configuration.setAddHeader(this.addHeader);
         configuration.setAddTodoForAutodoc(this.addTodoForAutodoc);
         configuration.setCommentFields(this.commentFields);
@@ -221,7 +219,7 @@ public class JautodocMojo extends AbstractMojo {
         final List<String> includes = new ArrayList<>();
         includes.add("**/*.java");
 
-        final DirectoryScanner ds = new DirectoryScanner();
+        final var ds = new DirectoryScanner();
         ds.setBasedir(newBasedir);
         ds.setIncludes(includes.toArray(new String[0]));
         ds.addDefaultExcludes();

@@ -159,13 +159,12 @@ final class CommentTextGenerator {
      */
     String generateGetterComment(final String methodName) {
         if (methodName.startsWith("is")) {
-            final String field = this.getFieldFromGetter(methodName);
-            final String target = field != null ? this.splitCamelCaseLower(field)
-                    : this.splitCamelCaseLower(methodName);
+            final var field = this.getFieldFromGetter(methodName);
+            final var target = field != null ? this.splitCamelCaseLower(field) : this.splitCamelCaseLower(methodName);
             return "Checks if is " + target + ".";
         }
-        final String field = this.getFieldFromGetter(methodName);
-        final String target = field != null ? this.splitCamelCaseLower(field) : this.splitCamelCaseLower(methodName);
+        final var field = this.getFieldFromGetter(methodName);
+        final var target = field != null ? this.splitCamelCaseLower(field) : this.splitCamelCaseLower(methodName);
         return "Gets the " + target + ".";
     }
 
@@ -178,8 +177,8 @@ final class CommentTextGenerator {
      * @return the string
      */
     String generateSetterComment(final String methodName) {
-        final String field = this.getFieldFromSetter(methodName);
-        final String target = field != null ? this.splitCamelCaseLower(field) : this.splitCamelCaseLower(methodName);
+        final var field = this.getFieldFromSetter(methodName);
+        final var target = field != null ? this.splitCamelCaseLower(field) : this.splitCamelCaseLower(methodName);
         return "Sets the " + target + ".";
     }
 
@@ -225,7 +224,7 @@ final class CommentTextGenerator {
             return "true, if successful";
         }
         // Strip generic parameters for the description, e.g. "List<String>" -> "list"
-        final String baseType = returnTypeName.contains("<") ? returnTypeName.substring(0, returnTypeName.indexOf('<'))
+        final var baseType = returnTypeName.contains("<") ? returnTypeName.substring(0, returnTypeName.indexOf('<'))
                 : returnTypeName;
         return "the " + this.splitCamelCaseLower(baseType);
     }
@@ -240,7 +239,7 @@ final class CommentTextGenerator {
      */
     String generateThrowsComment(final String exceptionName) {
         // Strip package prefix if present
-        final String simple = exceptionName.contains(".") ? exceptionName.substring(exceptionName.lastIndexOf('.') + 1)
+        final var simple = exceptionName.contains(".") ? exceptionName.substring(exceptionName.lastIndexOf('.') + 1)
                 : exceptionName;
         return "the " + this.splitCamelCaseLower(simple);
     }
@@ -258,12 +257,12 @@ final class CommentTextGenerator {
      * @return the string
      */
     String splitCamelCaseLower(final String name) {
-        final List<String> words = this.splitWords(name);
+        final var words = this.splitWords(name);
         if (words.isEmpty()) {
             return name != null ? name : "";
         }
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < words.size(); i++) {
+        final var sb = new StringBuilder();
+        for (var i = 0; i < words.size(); i++) {
             if (i > 0) {
                 sb.append(' ');
             }
@@ -309,7 +308,7 @@ final class CommentTextGenerator {
         }
 
         // Skip leading underscores/dollars
-        int start = 0;
+        var start = 0;
         while (start < name.length() && (name.charAt(start) == '_' || name.charAt(start) == '$')) {
             start++;
         }
@@ -318,9 +317,9 @@ final class CommentTextGenerator {
             return words;
         }
 
-        StringBuilder word = new StringBuilder();
-        for (int i = start; i < name.length(); i++) {
-            final char c = name.charAt(i);
+        var word = new StringBuilder();
+        for (var i = start; i < name.length(); i++) {
+            final var c = name.charAt(i);
 
             // Underscore or dollar sign is a word separator
             if (c == '_' || c == '$') {
@@ -332,9 +331,9 @@ final class CommentTextGenerator {
             }
 
             if (Character.isUpperCase(c) && word.length() > 0) {
-                final char prev = word.charAt(word.length() - 1);
+                final var prev = word.charAt(word.length() - 1);
                 if (!Character.isUpperCase(prev)
-                        || (i + 1 < name.length() && Character.isLowerCase(name.charAt(i + 1)))) {
+                        || i + 1 < name.length() && Character.isLowerCase(name.charAt(i + 1))) {
                     // lowerToUpper transition: "myFoo" -> split before F
                     words.add(word.toString());
                     word = new StringBuilder();

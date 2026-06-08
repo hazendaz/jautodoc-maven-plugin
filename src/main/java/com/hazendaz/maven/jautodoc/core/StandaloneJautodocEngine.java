@@ -19,7 +19,6 @@ import org.eclipse.jdt.core.ToolFactory;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
-import org.eclipse.text.edits.TextEdit;
 
 /**
  * Standalone Jautodoc engine: processes Java source files entirely from the file system using Eclipse JDT AST / text
@@ -58,12 +57,12 @@ public final class StandaloneJautodocEngine {
      * @return the jautodoc result
      */
     public JautodocResult process(final List<Path> files) {
-        int success = 0;
-        int fail = 0;
-        int skipped = 0;
-        int readOnly = 0;
+        var success = 0;
+        var fail = 0;
+        var skipped = 0;
+        var readOnly = 0;
 
-        final JavaSourceProcessor sourceProcessor = new JavaSourceProcessor(this.config);
+        final var sourceProcessor = new JavaSourceProcessor(this.config);
 
         for (final Path file : files) {
             if (!Files.exists(file)) {
@@ -75,8 +74,8 @@ public final class StandaloneJautodocEngine {
                 continue;
             }
             try {
-                final String original = Files.readString(file, StandardCharsets.UTF_8);
-                final String result = this.processSource(original, sourceProcessor);
+                final var original = Files.readString(file, StandardCharsets.UTF_8);
+                final var result = this.processSource(original, sourceProcessor);
 
                 if (!result.equals(original)) {
                     Files.writeString(file, result, StandardCharsets.UTF_8);
@@ -117,7 +116,7 @@ public final class StandaloneJautodocEngine {
      * @return the string
      */
     private String processSource(final String source, final JavaSourceProcessor sourceProcessor) {
-        String result = source;
+        var result = source;
 
         // 1. Header
         result = HeaderProcessor.process(result, this.config);
@@ -146,12 +145,12 @@ public final class StandaloneJautodocEngine {
         final Map options = Map.of("org.eclipse.jdt.core.compiler.source", "21",
                 "org.eclipse.jdt.core.compiler.compliance", "21",
                 "org.eclipse.jdt.core.compiler.codegen.targetPlatform", "21");
-        final CodeFormatter formatter = ToolFactory.createCodeFormatter(options);
-        final TextEdit edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT, source, 0, source.length(), 0, null);
+        final var formatter = ToolFactory.createCodeFormatter(options);
+        final var edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT, source, 0, source.length(), 0, null);
         if (edit == null) {
             return source;
         }
-        final Document doc = new Document(source);
+        final var doc = new Document(source);
         try {
             edit.apply(doc);
         } catch (final BadLocationException e) {
