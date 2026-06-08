@@ -272,6 +272,14 @@ final class CommentTextGenerator {
         return sb.toString();
     }
 
+    /**
+     * Capitalize.
+     *
+     * @param s
+     *            the s
+     *
+     * @return the string
+     */
     private String capitalize(final String s) {
         if (s == null || s.isEmpty()) {
             return s;
@@ -288,6 +296,11 @@ final class CommentTextGenerator {
      * <li>{@code XMLParser} → [XML, Parser]
      * <li>{@code _privateVar} → [private, Var]
      * </ul>
+     *
+     * @param name
+     *            the name
+     *
+     * @return the list
      */
     private List<String> splitWords(final String name) {
         final List<String> words = new ArrayList<>();

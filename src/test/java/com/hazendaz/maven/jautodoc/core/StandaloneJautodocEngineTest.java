@@ -22,6 +22,7 @@ import org.junit.jupiter.api.io.TempDir;
  */
 public class StandaloneJautodocEngineTest {
 
+    /** The temp dir. */
     @TempDir
     Path tempDir;
 
@@ -29,6 +30,11 @@ public class StandaloneJautodocEngineTest {
     // Configuration factory helpers
     // =========================================================================
 
+    /**
+     * Defaults.
+     *
+     * @return the jautodoc configuration
+     */
     private static JautodocConfiguration defaults() {
         final JautodocConfiguration c = new JautodocConfiguration();
         c.setMode(JautodocMode.COMPLETE);
@@ -51,6 +57,9 @@ public class StandaloneJautodocEngineTest {
     /**
      * Complete mode on a plain class should add type, constructor, method and boolean-return comments matching the
      * expected golden file.
+     *
+     * @throws IOException
+     *             the io exception
      */
     @Test
     void completeMode_simpleClass_matchesGolden() throws IOException {
@@ -69,6 +78,9 @@ public class StandaloneJautodocEngineTest {
     // KEEP mode – existing Javadoc is preserved
     // =========================================================================
 
+    /**
+     * Keep mode existing javadoc is untouched.
+     */
     @Test
     void keepMode_existingJavadocIsUntouched() {
         final String source = "package p;\n/** My doc. */\npublic class Foo {}\n";
@@ -81,6 +93,9 @@ public class StandaloneJautodocEngineTest {
         Assertions.assertTrue(result.contains("/** My doc. */"), "KEEP mode must not alter existing Javadoc");
     }
 
+    /**
+     * Keep mode adds missing javadoc.
+     */
     @Test
     void keepMode_addsMissingJavadoc() {
         final String source = "package p;\npublic class Bar {}\n";
@@ -97,6 +112,9 @@ public class StandaloneJautodocEngineTest {
     // REPLACE mode – existing Javadoc is overwritten
     // =========================================================================
 
+    /**
+     * Replace mode replaces existing javadoc.
+     */
     @Test
     void replaceMode_replacesExistingJavadoc() {
         final String source = "package p;\n/** Old comment. */\npublic class Baz {}\n";
@@ -114,6 +132,12 @@ public class StandaloneJautodocEngineTest {
     // Visibility filters
     // =========================================================================
 
+    /**
+     * Visibility public and package matches golden.
+     *
+     * @throws IOException
+     *             the io exception
+     */
     @Test
     void visibility_publicAndPackage_matchesGolden() throws IOException {
         final String input = StandaloneJautodocEngineTest.fixture("visibility/input.java");
@@ -127,6 +151,9 @@ public class StandaloneJautodocEngineTest {
                 "Default visibility (public+package) output must match golden");
     }
 
+    /**
+     * Visibility private field commented when enabled.
+     */
     @Test
     void visibility_privateField_commentedWhenEnabled() {
         final String source = "package p;\npublic class C {\n    private int x;\n}\n";
@@ -140,6 +167,9 @@ public class StandaloneJautodocEngineTest {
                 "Private field should be commented when visibilityPrivate=true");
     }
 
+    /**
+     * Visibility private field not commented by default.
+     */
     @Test
     void visibility_privateField_notCommentedByDefault() {
         final String source = "package p;\npublic class C {\n    private int x;\n}\n";
@@ -155,6 +185,12 @@ public class StandaloneJautodocEngineTest {
     // Header
     // =========================================================================
 
+    /**
+     * Header inserted when absent.
+     *
+     * @throws IOException
+     *             the io exception
+     */
     @Test
     void header_insertedWhenAbsent() throws IOException {
         final String input = StandaloneJautodocEngineTest.fixture("header/input.java");
@@ -170,6 +206,9 @@ public class StandaloneJautodocEngineTest {
                 StandaloneJautodocEngineTest.normalise(actual), "Header must be inserted when absent");
     }
 
+    /**
+     * Header not inserted when add header false.
+     */
     @Test
     void header_notInsertedWhenAddHeaderFalse() {
         final String source = "package p;\npublic class X {}\n";
@@ -182,6 +221,9 @@ public class StandaloneJautodocEngineTest {
         Assertions.assertFalse(result.startsWith("/*"), "Header must not be inserted when addHeader=false");
     }
 
+    /**
+     * Header kept when replace header false.
+     */
     @Test
     void header_keptWhenReplaceHeaderFalse() {
         final String source = "/* Original header */\npackage p;\npublic class X {}\n";
@@ -198,6 +240,9 @@ public class StandaloneJautodocEngineTest {
                 "New header must not be written when replaceHeader=false");
     }
 
+    /**
+     * Header replaced when replace header true.
+     */
     @Test
     void header_replacedWhenReplaceHeaderTrue() {
         final String source = "/* Original header */\npackage p;\npublic class X {}\n";
@@ -217,6 +262,9 @@ public class StandaloneJautodocEngineTest {
     // Header-only mode
     // =========================================================================
 
+    /**
+     * Header only no javadoc added.
+     */
     @Test
     void headerOnly_noJavadocAdded() {
         final String source = "package p;\npublic class Y {}\n";
@@ -235,6 +283,12 @@ public class StandaloneJautodocEngineTest {
     // Getter / setter
     // =========================================================================
 
+    /**
+     * Getter setter matches golden.
+     *
+     * @throws IOException
+     *             the io exception
+     */
     @Test
     void getterSetter_matchesGolden() throws IOException {
         final String input = StandaloneJautodocEngineTest.fixture("getter-setter/input.java");
@@ -249,6 +303,9 @@ public class StandaloneJautodocEngineTest {
                 StandaloneJautodocEngineTest.normalise(actual), "Getter/setter output must match golden");
     }
 
+    /**
+     * Getter setter only skips regular methods.
+     */
     @Test
     void getterSetterOnly_skipsRegularMethods() {
         final String source = "package p;\npublic class C {\n" + "    public String getFoo() { return null; }\n"
@@ -263,6 +320,9 @@ public class StandaloneJautodocEngineTest {
                 "Regular method must not be commented with getterSetterOnly=true");
     }
 
+    /**
+     * Exclude getter setter skips getters and setters.
+     */
     @Test
     void excludeGetterSetter_skipsGettersAndSetters() {
         final String source = "package p;\npublic class C {\n" + "    public String getFoo() { return null; }\n"
@@ -282,6 +342,9 @@ public class StandaloneJautodocEngineTest {
     // createDummyComment=false
     // =========================================================================
 
+    /**
+     * Create dummy comment false skips description for members with no tags.
+     */
     @Test
     void createDummyComment_false_skipsDescriptionForMembersWithNoTags() {
         // A method with no params, void return, no throws → would produce empty Javadoc → should be skipped
@@ -300,6 +363,9 @@ public class StandaloneJautodocEngineTest {
     // addTodoForAutodoc
     // =========================================================================
 
+    /**
+     * Add todo for autodoc prefixes todo.
+     */
     @Test
     void addTodoForAutodoc_prefixesTodo() {
         final String source = "package p;\npublic class D {\n    public int getValue() { return 0; }\n}\n";
@@ -315,6 +381,9 @@ public class StandaloneJautodocEngineTest {
     // COMPLETE mode – adds missing tags
     // =========================================================================
 
+    /**
+     * Complete mode adds missing param to existing javadoc.
+     */
     @Test
     void completeMode_addsMissingParamToExistingJavadoc() {
         // Existing Javadoc has no @param
@@ -333,6 +402,9 @@ public class StandaloneJautodocEngineTest {
     // excludeOverrides
     // =========================================================================
 
+    /**
+     * Exclude overrides skips overridden methods.
+     */
     @Test
     void excludeOverrides_skipsOverriddenMethods() {
         final String source = "package p;\npublic class C {\n" + "    @Override\n"
@@ -347,6 +419,9 @@ public class StandaloneJautodocEngineTest {
         Assertions.assertTrue(result.contains("Do work"), "Non-override method must still be commented");
     }
 
+    /**
+     * Exclude overrides false comments overridden methods.
+     */
     @Test
     void excludeOverrides_false_commentsOverriddenMethods() {
         final String source = "package p;\npublic class C {\n" + "    @Override\n"
@@ -364,6 +439,12 @@ public class StandaloneJautodocEngineTest {
     // Result counters
     // =========================================================================
 
+    /**
+     * Result counters success and missing.
+     *
+     * @throws IOException
+     *             the io exception
+     */
     @Test
     void resultCounters_successAndMissing() throws IOException {
         final Path existing = this.tempDir.resolve("Exists.java");
@@ -385,11 +466,17 @@ public class StandaloneJautodocEngineTest {
     // JautodocMode.fromString
     // =========================================================================
 
+    /**
+     * Mode from string null defaults to complete.
+     */
     @Test
     void modeFromString_nullDefaultsToComplete() {
         Assertions.assertEquals(JautodocMode.COMPLETE, JautodocMode.fromString(null));
     }
 
+    /**
+     * Mode from string case insensitive.
+     */
     @Test
     void modeFromString_caseInsensitive() {
         Assertions.assertEquals(JautodocMode.KEEP, JautodocMode.fromString("KEEP"));
@@ -397,6 +484,9 @@ public class StandaloneJautodocEngineTest {
         Assertions.assertEquals(JautodocMode.COMPLETE, JautodocMode.fromString("complete"));
     }
 
+    /**
+     * Mode from string unknown falls back to complete.
+     */
     @Test
     void modeFromString_unknownFallsBackToComplete() {
         Assertions.assertEquals(JautodocMode.COMPLETE, JautodocMode.fromString("bogus"));
@@ -406,7 +496,17 @@ public class StandaloneJautodocEngineTest {
     // Helpers
     // =========================================================================
 
-    /** Loads a test fixture from {@code src/test/resources/fixtures/<path>}. */
+    /**
+     * Loads a test fixture from {@code src/test/resources/fixtures/<path>}.
+     *
+     * @param relativePath
+     *            the relative path
+     *
+     * @return the string
+     *
+     * @throws IOException
+     *             the io exception
+     */
     private static String fixture(final String relativePath) throws IOException {
         final String resourcePath = "/fixtures/" + relativePath;
         try (InputStream is = StandaloneJautodocEngineTest.class.getResourceAsStream(resourcePath)) {
@@ -418,6 +518,11 @@ public class StandaloneJautodocEngineTest {
     /**
      * Normalises line endings and trims trailing whitespace from each line so that golden-file comparisons are not
      * affected by OS-specific newline differences or editor trailing-whitespace settings.
+     *
+     * @param s
+     *            the s
+     *
+     * @return the string
      */
     private static String normalise(final String s) {
         return s.replace("\r\n", "\n").replace("\r", "\n")

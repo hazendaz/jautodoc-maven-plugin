@@ -52,7 +52,9 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
  */
 public final class JavaSourceProcessor {
 
+    /** The config. */
     private final JautodocConfiguration config;
+    /** The generator. */
     private final CommentTextGenerator generator;
 
     /**
@@ -115,6 +117,16 @@ public final class JavaSourceProcessor {
     // Pre-pass: field javadoc map
     // -------------------------------------------------------------------------
 
+    /**
+     * Build field javadoc map.
+     *
+     * @param cu
+     *            the cu
+     * @param source
+     *            the source
+     *
+     * @return the map
+     */
     private Map<String, String> buildFieldJavadocMap(final CompilationUnit cu, final String source) {
         final Map<String, String> map = new HashMap<>();
         if (!this.config.isGetterSetterFromField()) {
@@ -142,14 +154,36 @@ public final class JavaSourceProcessor {
     // Inner visitor
     // =========================================================================
 
+    /**
+     * The Class JavadocVisitor.
+     */
     private static final class JavadocVisitor extends ASTVisitor {
 
+        /** The source. */
         private final String source;
+        /** The config. */
         private final JautodocConfiguration config;
+        /** The generator. */
         private final CommentTextGenerator generator;
+        /** The field javadoc map. */
         private final Map<String, String> fieldJavadocMap;
+        /** The edits. */
         private final List<JavadocEdit> edits;
 
+        /**
+         * Instantiates a new javadoc visitor.
+         *
+         * @param source
+         *            the source
+         * @param config
+         *            the config
+         * @param generator
+         *            the generator
+         * @param fieldJavadocMap
+         *            the field javadoc map
+         * @param edits
+         *            the edits
+         */
         JavadocVisitor(final String source, final JautodocConfiguration config, final CommentTextGenerator generator,
                 final Map<String, String> fieldJavadocMap, final List<JavadocEdit> edits) {
             this.source = source;
@@ -249,6 +283,20 @@ public final class JavaSourceProcessor {
         // Description builders
         // -------------------------------------------------------------------------
 
+        /**
+         * Build method description.
+         *
+         * @param node
+         *            the node
+         * @param name
+         *            the name
+         * @param isGetter
+         *            the is getter
+         * @param isSetter
+         *            the is setter
+         *
+         * @return the string
+         */
         private String buildMethodDescription(final MethodDeclaration node, final String name, final boolean isGetter,
                 final boolean isSetter) {
             if (node.isConstructor()) {
@@ -267,6 +315,14 @@ public final class JavaSourceProcessor {
             return this.generator.generateMethodComment(name);
         }
 
+        /**
+         * Build getter desc.
+         *
+         * @param methodName
+         *            the method name
+         *
+         * @return the string
+         */
         private String buildGetterDesc(final String methodName) {
             if (this.config.isGetterSetterFromField()) {
                 final String fieldName = this.generator.getFieldFromGetter(methodName);
@@ -280,6 +336,14 @@ public final class JavaSourceProcessor {
             return this.generator.generateGetterComment(methodName);
         }
 
+        /**
+         * Build setter desc.
+         *
+         * @param methodName
+         *            the method name
+         *
+         * @return the string
+         */
         private String buildSetterDesc(final String methodName) {
             if (this.config.isGetterSetterFromField()) {
                 final String fieldName = this.generator.getFieldFromSetter(methodName);
@@ -293,7 +357,14 @@ public final class JavaSourceProcessor {
             return this.generator.generateSetterComment(methodName);
         }
 
-        /** Returns {@code s} with the first character lower-cased. */
+        /**
+         * Returns {@code s} with the first character lower-cased.
+         *
+         * @param s
+         *            the s
+         *
+         * @return the string
+         */
         private static String lcFirst(final String s) {
             if (s == null || s.isEmpty()) {
                 return s;
@@ -304,6 +375,13 @@ public final class JavaSourceProcessor {
         /**
          * Extracts the main (non-tag) description from a raw Javadoc comment string. Strips the surrounding delimiters
          * and leading {@code *} characters from each line.
+         *
+         * @param javadocText
+         *            the javadoc text
+         * @param firstSentenceOnly
+         *            the first sentence only
+         *
+         * @return the string
          */
         private static String extractMainDescFromJavadocText(final String javadocText,
                 final boolean firstSentenceOnly) {
@@ -340,6 +418,16 @@ public final class JavaSourceProcessor {
         // Tag builders
         // -------------------------------------------------------------------------
 
+        /**
+         * Build method tags.
+         *
+         * @param node
+         *            the node
+         * @param isGetter
+         *            the is getter
+         *
+         * @return the list
+         */
         private List<String> buildMethodTags(final MethodDeclaration node, final boolean isGetter) {
             final List<String> tags = new ArrayList<>();
 
@@ -383,6 +471,16 @@ public final class JavaSourceProcessor {
         // Edit builders
         // -------------------------------------------------------------------------
 
+        /**
+         * Add javadoc edit.
+         *
+         * @param node
+         *            the node
+         * @param description
+         *            the description
+         * @param tagLines
+         *            the tag lines
+         */
         private void addJavadocEdit(final BodyDeclaration node, final String description, final List<String> tagLines) {
             // Optionally suppress description
             final String desc = this.config.isCreateDummyComment() ? description : "";
@@ -426,7 +524,14 @@ public final class JavaSourceProcessor {
             this.edits.add(new JavadocEdit(insertOffset, 0, javadocText + "\n"));
         }
 
-        /** Returns true when the body declaration is a getter or setter method. */
+        /**
+         * Returns true when the body declaration is a getter or setter method.
+         *
+         * @param node
+         *            the node
+         *
+         * @return true, if successful
+         */
         private boolean isGetterOrSetter(final BodyDeclaration node) {
             if (!(node instanceof MethodDeclaration)) {
                 return false;
@@ -437,7 +542,14 @@ public final class JavaSourceProcessor {
             return this.generator.isGetter(name, params) || this.generator.isSetter(name, params);
         }
 
-        /** Returns true when the method declaration has an {@code @Override} annotation. */
+        /**
+         * Returns true when the method declaration has an {@code @Override} annotation.
+         *
+         * @param node
+         *            the node
+         *
+         * @return true, if successful
+         */
         private static boolean hasOverrideAnnotation(final MethodDeclaration node) {
             for (final Object mod : node.modifiers()) {
                 if (mod instanceof MarkerAnnotation) {
@@ -452,6 +564,16 @@ public final class JavaSourceProcessor {
 
         // ---- COMPLETE-mode tag completion ----
 
+        /**
+         * Complete missing tags.
+         *
+         * @param node
+         *            the node
+         * @param existing
+         *            the existing
+         * @param requiredTags
+         *            the required tags
+         */
         private void completeMissingTags(final BodyDeclaration node, final Javadoc existing,
                 final List<String> requiredTags) {
             if (requiredTags.isEmpty() || !(node instanceof MethodDeclaration)) {
@@ -522,6 +644,20 @@ public final class JavaSourceProcessor {
         // Formatting helpers
         // -------------------------------------------------------------------------
 
+        /**
+         * Build javadoc text.
+         *
+         * @param description
+         *            the description
+         * @param tagLines
+         *            the tag lines
+         * @param indent
+         *            the indent
+         * @param isField
+         *            the is field
+         *
+         * @return the string
+         */
         private String buildJavadocText(final String description, final List<String> tagLines, final String indent,
                 final boolean isField) {
             final boolean hasDesc = !description.isEmpty();
@@ -549,6 +685,11 @@ public final class JavaSourceProcessor {
 
         /**
          * Computes the whitespace-only indentation for the line that contains {@code sourceOffset}.
+         *
+         * @param sourceOffset
+         *            the source offset
+         *
+         * @return the string
          */
         private String computeIndent(final int sourceOffset) {
             final int lineBegin = this.lineStartOffset(sourceOffset);
@@ -562,6 +703,11 @@ public final class JavaSourceProcessor {
 
         /**
          * Returns the offset of the first character on the line that contains {@code pos}.
+         *
+         * @param pos
+         *            the pos
+         *
+         * @return the int
          */
         private int lineStartOffset(final int pos) {
             int p = pos - 1;
@@ -573,6 +719,14 @@ public final class JavaSourceProcessor {
 
         // ---- Visibility filter ----
 
+        /**
+         * Should comment by visibility.
+         *
+         * @param modifiers
+         *            the modifiers
+         *
+         * @return true, if successful
+         */
         private boolean shouldCommentByVisibility(final int modifiers) {
             if (Modifier.isPublic(modifiers)) {
                 return this.config.isVisibilityPublic();

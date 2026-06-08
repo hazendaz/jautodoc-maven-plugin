@@ -11,6 +11,7 @@ package com.example;
  */
 public class SimpleClass {
 
+    /** The name. */
     private String name;
 
     /**

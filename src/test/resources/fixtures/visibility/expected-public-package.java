@@ -14,11 +14,13 @@ public class VisibilityClass {
     /** The public field. */
     public String publicField;
 
+    /** The protected field. */
     protected String protectedField;
 
     /** The package field. */
     String packageField;
 
+    /** The private field. */
     private String privateField;
 
     /**
@@ -27,6 +29,9 @@ public class VisibilityClass {
     public void publicMethod() {
     }
 
+    /**
+     * Protected method.
+     */
     protected void protectedMethod() {
     }
 
@@ -36,6 +41,9 @@ public class VisibilityClass {
     void packageMethod() {
     }
 
+    /**
+     * Private method.
+     */
     private void privateMethod() {
     }
 }

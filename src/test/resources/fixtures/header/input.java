@@ -6,8 +6,14 @@
  */
 package com.example;
 
+/**
+ * The Class HeaderInput.
+ */
 public class HeaderInput {
 
+    /**
+     * Hello.
+     */
     public void hello() {
     }
 }

@@ -16,6 +16,9 @@ import com.hazendaz.maven.jautodoc.core.JautodocConfiguration;
  */
 public final class HeaderProcessor {
 
+    /**
+     * Instantiates a new header processor.
+     */
     private HeaderProcessor() {
     }
 
@@ -103,6 +106,14 @@ public final class HeaderProcessor {
     // Private helpers
     // -------------------------------------------------------------------------
 
+    /**
+     * Build header comment.
+     *
+     * @param config
+     *            the config
+     *
+     * @return the string
+     */
     private static String buildHeaderComment(final JautodocConfiguration config) {
         final String text = config.getHeaderText().trim();
         final String open = config.isMultiCommentHeader() ? "/**" : "/*";

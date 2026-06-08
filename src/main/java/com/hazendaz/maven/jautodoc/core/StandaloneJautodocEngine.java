@@ -36,6 +36,7 @@ import org.eclipse.text.edits.TextEdit;
  */
 public final class StandaloneJautodocEngine {
 
+    /** The config. */
     private final JautodocConfiguration config;
 
     /**
@@ -105,6 +106,16 @@ public final class StandaloneJautodocEngine {
     // Private helpers
     // -------------------------------------------------------------------------
 
+    /**
+     * Process source.
+     *
+     * @param source
+     *            the source
+     * @param sourceProcessor
+     *            the source processor
+     *
+     * @return the string
+     */
     private String processSource(final String source, final JavaSourceProcessor sourceProcessor) {
         String result = source;
 
@@ -122,6 +133,14 @@ public final class StandaloneJautodocEngine {
         return result;
     }
 
+    /**
+     * Format.
+     *
+     * @param source
+     *            the source
+     *
+     * @return the string
+     */
     @SuppressWarnings({ "rawtypes" })
     private String format(final String source) {
         final Map options = Map.of("org.eclipse.jdt.core.compiler.source", "21",
