@@ -6,14 +6,12 @@
  */
 package com.hazendaz.maven.jautodoc;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Comparator;
 import java.util.stream.Stream;
 
 import org.apache.maven.api.plugin.testing.InjectMojo;
