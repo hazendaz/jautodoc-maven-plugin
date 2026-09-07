@@ -216,8 +216,10 @@ public class JautodocMojo extends AbstractMojo {
      * @return the list
      */
     List<File> addCollectionFiles(final File newBasedir) {
+        // TODO: Add support for includes/excludes from configuration (doesn't handle groovy very well at the moment)
         final List<String> includes = new ArrayList<>();
         includes.add("**/*.java");
+        includes.add("**/*.groovy");
 
         final var ds = new DirectoryScanner();
         ds.setBasedir(newBasedir);
