@@ -111,7 +111,7 @@
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.core.commands</artifactId>
-                <version>3.12.500</version>
+                <version>3.13.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
