@@ -67,6 +67,8 @@
         <java.test.version>21</java.test.version>
         <java.test.release.version>21</java.test.release.version>
 
+        <!-- Dependencies -->
+        <commons-logging.version>1.4.0</commons-logging.version>
         <maven.version>3.10.0</maven.version>
 
         <!-- Automatic Module Name -->
@@ -140,6 +142,19 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-resolver-provider</artifactId>
             <version>${maven.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>${commons-logging.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -246,7 +261,7 @@
                                             <pluginExecutionFilter>
                                                 <groupId>org.apache.maven.plugins</groupId>
                                                 <artifactId>maven-plugin-plugin</artifactId>
-                                                <versionRange>[3.15.2,)</versionRange>
+                                                <versionRange>[3.16.0,)</versionRange>
                                                 <goals>
                                                     <goal>helpmojo</goal>
                                                     <goal>descriptor</goal>
