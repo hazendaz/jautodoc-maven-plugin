@@ -67,6 +67,9 @@
         <java.test.version>21</java.test.version>
         <java.test.release.version>21</java.test.release.version>
 
+        <!-- Jacoco minimum code coverage -->
+        <jacoco.minimum.coverage>0.55</jacoco.minimum.coverage>
+
         <!-- Dependencies -->
         <commons-logging.version>1.4.0</commons-logging.version>
         <maven.version>3.10.0</maven.version>
