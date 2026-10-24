@@ -547,8 +547,8 @@ public final class JavaSourceProcessor {
          */
         private static boolean hasOverrideAnnotation(final MethodDeclaration node) {
             for (final Object mod : node.modifiers()) {
-                if (mod instanceof MarkerAnnotation) {
-                    final var name = ((MarkerAnnotation) mod).getTypeName().getFullyQualifiedName();
+                if (mod instanceof MarkerAnnotation markerAnnotation) {
+                    final var name = markerAnnotation.getTypeName().getFullyQualifiedName();
                     if ("Override".equals(name) || "java.lang.Override".equals(name)) {
                         return true;
                     }
@@ -588,8 +588,8 @@ public final class JavaSourceProcessor {
                 }
                 if ("@param".equals(tagName) && !tag.fragments().isEmpty()) {
                     final var first = tag.fragments().get(0);
-                    if (first instanceof SimpleName) {
-                        presentParams.add(((SimpleName) first).getIdentifier());
+                    if (first instanceof SimpleName simpleName) {
+                        presentParams.add(simpleName.getIdentifier());
                     }
                 } else if ("@throws".equals(tagName) || "@exception".equals(tagName)) {
                     if (!tag.fragments().isEmpty()) {
