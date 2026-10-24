@@ -493,9 +493,10 @@ public final class JavaSourceProcessor {
 
             if (existing != null) {
                 switch (mode) {
-                    case KEEP:
+                    case KEEP -> {
                         return; // leave as-is
-                    case REPLACE:
+                    }
+                    case REPLACE -> {
                         if (!this.config.isGetterSetterFromField() || this.config.isGetterSetterFromFieldReplace()
                                 || !this.isGetterOrSetter(node)) {
                             final var off = existing.getStartPosition();
@@ -505,11 +506,14 @@ public final class JavaSourceProcessor {
                                     new JavadocEdit(off, len, this.buildJavadocText(desc, tagLines, indent, isField)));
                         }
                         return;
-                    case COMPLETE:
+                    }
+                    case COMPLETE -> {
                         this.completeMissingTags(node, existing, tagLines);
                         return;
-                    default:
+                    }
+                    default -> {
                         return;
+                    }
                 }
             }
 
