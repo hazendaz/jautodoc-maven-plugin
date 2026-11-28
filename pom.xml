@@ -73,7 +73,7 @@
         <!-- Dependencies -->
         <commons-logging.version>1.4.0</commons-logging.version>
         <maven.version>3.10.2</maven.version>
-        <mockito.version>5.24.0</mockito.version>
+        <mockito.version>5.25.0</mockito.version>
 
         <!-- Surefire Setup -->
         <argLine>-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar</argLine>
